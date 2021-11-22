@@ -4,16 +4,137 @@
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <link href="./styles.css" rel="stylesheet">
-    <title>Hello World!</title>
+    <link href="./styles/css/main.css" rel="stylesheet">
+    <title>Rabbitwave Streamer</title>
   </head>
-  <body>
-    <h1>Hello World!</h1>
-    We are using Node.js <span id="node-version"></span>,
-    Chromium <span id="chrome-version"></span>,
-    and Electron <span id="electron-version"></span>.
+  <body class="mainwindow">
 
-    <!-- You can also require other files to run in this process -->
+    <!-- Settings panel -->
+    <div class="dark-overlay" id="settings-panel">
+      <div class="popup">
+
+        <!-- Név -->
+        <div class="selector">
+          <div>Neved:</div>
+          <div class="row ">
+            <input type="text" id="user_name" placeholder="Írd be a neved" />
+            <input type="button" value="Beállítás"  class="gap" />
+          </div>
+        </div>
+
+        <!-- Stream target -->
+        <div class="selector">
+          <div>Streamelés ide:</div>
+          <div class="row">
+            <input type="text" id="server_ip" placeholder="Írd be a szerver IP címét" />
+            <input type="button" value="Beállítás" />
+          </div>
+        </div>          
+
+        <!-- Devicces -->
+        <div class="selector">
+          <div>Kamera:</div>
+            <select id="camera-selector"></select>
+        </div>
+
+        <div class="selector">
+          <div>Mikrofon:</div>
+            <select id="mic-selector"></select>
+        </div>
+
+        <div class="selector">
+          <div>Hangkimenet:</div>
+            <select id="output-selector"></select>
+        </div>
+
+        <!-- Felbontás -->
+        <div class="selector">
+          <div>Videó felbontása:</div>
+            <select id="resolution-selector">
+              <optgroup label="4:3">
+                <option value="640x480">640 × 480</option>
+                <option value="800x600">800 × 600</option>
+                <option value="1024x768">1024 × 768</option>
+                <option value="1280x960">1280 × 960</option>
+                <option value="1600x1200">1600 × 1200</option>
+              </optgroup>
+              <optgroup label="16:9">
+                <option value="852x480">852 × 480</option>
+                <option value="1280x720" selected>1280 × 720 (JAVASOLT!)</option>
+                <option value="1920x1080">1920 × 1080</option>
+              </optgroup>
+
+            </select>
+        </div>        
+        
+        <!-- Gombok -->
+        <div class="selector">
+          <div class="row">
+            <input type="button" id="btn_refresh_devices" value="Eszközök frissítése" />
+            <input type="button" id="btn_save_settings" value="Beállítások mentése" />
+            <input type="button"  id="btn_load_settings" value="Beállítások visszatöltése " />
+            <input type="button"  id="btn_close_settings" value="Bezárás" />
+          </div>
+        </div>        
+
+      </div>
+    </div>
+
+    <!-- Video and stream preview -->
+    <div class="stream-preview">
+
+        <!-- Camera preview -->
+        <div class="camera-image">
+          <video autoplay muted id="camera-image"></video>
+        </div>
+  
+        <!-- Stream feedback -->
+        <div class="camera-image">
+            <video autoplay id="stream-feedback"></video>
+        </div>
+    </div>
+
+    <!-- Media selector preview -->
+    <div class="overlay-selector">
+
+      <div class="media-preview-container">
+        <div class="camera-image small">
+            <img id="media_preview_image" class="media-preview" />
+            <video id="media_preview_video" muted autoplay loop class="media-preview"></video>
+            <audio id="media_preview_audio" controls muted class="media-preview audio"></audio> 
+        </div>
+
+        <div class="media-list-buttons">
+          <input type="button" value="Mutatás" id="btn_show_media" />
+          <input type="button" value="Mutatás hang nélkül" id="btn_show_media_nosound" />
+        </div>
+      </div>      
+
+      <!-- Media files list -->
+      <div class="media-list">
+        Képek, videók, hangok:<br />
+        <select id="media-list" size="10"></select>
+
+        <div class="media-list-buttons">
+          <input type="button" value="Új" id="btn_media_new" />
+          <input type="button" value="Törlés" id="btn_media_delete" />
+          <input type="button" value="Fel" id="btn_media_up" />
+          <input type="button" value="Le" id="btn_media_down" />
+          <input type="button" value="Mentés" id="btn_media_save" />
+          <input type="button" value="Betöltés" id="btn_media_load" />
+        </div>
+      </div>
+
+      <!-- Buttons and shit -->
+      <div class="control-panel">
+        <input type="button" value="Beállítások" id="btn_open_settings" /><br />
+
+        <input type="button" id="btn-start" value="START" />
+
+      </div>      
+    </div>
+
+    <script type="text/javascript" src="./index.js"></script>
     <script src="./renderer.js"></script>
   </body>
 </html>

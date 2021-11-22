@@ -1,0 +1,154 @@
+.mainwindow {
+  width: 100vw;
+  height: 100vh;
+  min-width: 100%;
+  min-height: 100%;
+  background: black;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: stretch;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12pt;
+  overflow: hidden;
+  margin: 0;
+  box-sizing: border-box;
+  z-index: 100; }
+  .mainwindow div {
+    box-sizing: border-box; }
+  .mainwindow .dark-overlay {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 10000;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center; }
+  .mainwindow .popup {
+    width: auto;
+    height: auto;
+    overflow: auto;
+    background: black;
+    border: 0.5em solid gray;
+    padding: 1em;
+    display: block; }
+    .mainwindow .popup .selector {
+      width: 100%;
+      height: auto;
+      margin-bottom: 1em; }
+      .mainwindow .popup .selector .gap {
+        margin-right: 1em; }
+  .mainwindow input[type=text], .mainwindow input[type=button], .mainwindow select {
+    background: black;
+    color: gray;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12pt;
+    border: 1px solid gray;
+    padding: 0.5em; }
+  .mainwindow input[type=text] {
+    color: white; }
+  .mainwindow input[type=button]:active {
+    background: darkgray;
+    color: white; }
+  .mainwindow .stream-preview {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 1em;
+    box-sizing: border-box; }
+  .mainwindow .camera-image {
+    border: 2px solid gray;
+    width: 640px;
+    height: 480px;
+    min-width: 640px;
+    min-height: 480px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center; }
+    .mainwindow .camera-image img, .mainwindow .camera-image video {
+      width: 640px;
+      height: 480px;
+      object-fit: contain; }
+    .mainwindow .camera-image.small {
+      width: 320px;
+      height: 240px;
+      min-width: 320px;
+      min-height: 240px; }
+      .mainwindow .camera-image.small img, .mainwindow .camera-image.small video {
+        width: 320px;
+        height: 240px;
+        object-fit: contain; }
+  .mainwindow .overlay-selector {
+    width: 100%;
+    height: auto;
+    padding: 1em;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-evenly;
+    box-sizing: border-box; }
+    .mainwindow .overlay-selector .media-preview-container {
+      width: auto;
+      height: 100%;
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center; }
+      .mainwindow .overlay-selector .media-preview-container .media-preview {
+        width: 100%;
+        height: 100%;
+        object-fit: scale-down;
+        min-width: 100%;
+        display: none; }
+        .mainwindow .overlay-selector .media-preview-container .media-preview.audio {
+          height: 3em; }
+        .mainwindow .overlay-selector .media-preview-container .media-preview.visible {
+          display: block; }
+    .mainwindow .overlay-selector .media-list {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      height: 100%; }
+      .mainwindow .overlay-selector .media-list #media-list {
+        overflow-x: hidden;
+        overflow-y: auto;
+        width: 30vw;
+        height: auto; }
+    .mainwindow .overlay-selector .media-list-buttons {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-evenly; }
+      .mainwindow .overlay-selector .media-list-buttons button {
+        width: 8em;
+        max-width: 8em; }
+      .mainwindow .overlay-selector .media-list-buttons #btn_show_media_nosound {
+        display: none; }
+    .mainwindow .overlay-selector .control-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      height: 100%;
+      box-sizing: border-box; }
+      .mainwindow .overlay-selector .control-panel #btn-start {
+        height: 6em;
+        border-radius: 50%;
+        width: 6em;
+        background: gray;
+        color: white; }
+        .mainwindow .overlay-selector .control-panel #btn-start.recording {
+          background: red; }
