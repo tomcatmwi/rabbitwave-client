@@ -4,53 +4,37 @@
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <link href="./styles/css/main.css" rel="stylesheet">
-    <title>Rabbitwave Streamer</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <link href="./styles/css/main.css" rel="stylesheet" type="text/css">
+    <link href="./styles/css/main_phone.css" media="screen and (max-width: 720px)" rel="stylesheet" type="text/css">
+    <title>Rabbitwave Vlogger</title>
   </head>
-  <body class="mainwindow">
+  <body>
 
     <!-- Settings panel -->
     <div class="dark-overlay" id="settings-panel">
       <div class="popup">
 
-        <!-- Név -->
-        <div class="selector">
-          <div>Neved:</div>
-          <div class="row ">
-            <input type="text" id="user_name" placeholder="Írd be a neved" />
-            <input type="button" value="Beállítás"  class="gap" />
-          </div>
-        </div>
-
-        <!-- Stream target -->
-        <div class="selector">
-          <div>Streamelés ide:</div>
-          <div class="row">
-            <input type="text" id="server_ip" placeholder="Írd be a szerver IP címét" />
-            <input type="button" value="Beállítás" />
-          </div>
-        </div>          
-
         <!-- Devicces -->
         <div class="selector">
-          <div>Kamera:</div>
-            <select id="camera-selector"></select>
+          <div>Video input device:</div>
+            <select id="camera-selector" class="fullwidth"></select>
         </div>
 
         <div class="selector">
-          <div>Mikrofon:</div>
-            <select id="mic-selector"></select>
+          <div>Audio input device:</div>
+            <select id="mic-selector" class="fullwidth"></select>
         </div>
 
         <div class="selector">
-          <div>Hangkimenet:</div>
-            <select id="output-selector"></select>
+          <div>Audio output device:</div>
+            <select id="output-selector" class="fullwidth"></select>
         </div>
 
-        <!-- Felbontás -->
         <div class="selector">
-          <div>Videó felbontása:</div>
-            <select id="resolution-selector">
+          <div>Video resolution:</div>
+            <select id="resolution-selector" class="fullwidth">
               <optgroup label="4:3">
                 <option value="640x480">640 × 480</option>
                 <option value="800x600">800 × 600</option>
@@ -60,81 +44,224 @@
               </optgroup>
               <optgroup label="16:9">
                 <option value="852x480">852 × 480</option>
-                <option value="1280x720" selected>1280 × 720 (JAVASOLT!)</option>
-                <option value="1920x1080">1920 × 1080</option>
+                <option value="1280x720" selected>1280 × 720</option>
+                <option selected value="1920x1080">1920 × 1080</option>
               </optgroup>
-
             </select>
-        </div>        
+        </div>
+
+        <div class="selector-row">
+
+          <div class="selector">
+            <div>Video codec:</div>
+              <select id="video-codec-selector">
+                <option value="video/mp4">MP4</option>
+                <option value="video/webm;codecs=vp9">WEBM, WP9</option>
+                <option value="video/webm;codecs=vp8">WEBM, WP8</option>
+                <option selected value="video/webm;codecs=h264">WEBM, H264</option>
+                <option value="video/x-matroska;codecs=avc1">Matroska, AVC1</option>
+              </select>
+          </div>
+          
+          <div class="selector">
+              <div>Video bitrate, kbps</div>
+              <input type="number" value="5000" id="video-bitrate-selector" min="500" max="50000" />
+          </div>              
         
-        <!-- Gombok -->
+          <div class="selector">
+              <div>Audio bitrate, kbps</div>
+              <input type="number" value="1400" id="audio-bitrate-selector" min="128" max="9600" />
+          </div>
+
+        </div>
+          
+        <div class="selector">
+            <div>Default filename (you can change it when saving, if necessary)</div>
+            <input type="text" value="vlog.webp" id="filename-selector" class="fullwidth" />
+        </div>
+
         <div class="selector">
           <div class="row">
-            <input type="button" id="btn_refresh_devices" value="Eszközök frissítése" />
-            <input type="button" id="btn_save_settings" value="Beállítások mentése" />
-            <input type="button"  id="btn_load_settings" value="Beállítások visszatöltése " />
-            <input type="button"  id="btn_close_settings" value="Bezárás" />
+            <input type="button" id="btn_refresh_devices" value="Refresh devices" />
+            <input type="button" id="btn_save_settings" value="Save settings" />
+            <input type="button"  id="btn_load_settings" value="Load settings" />
+            <input type="button"  id="btn_close_settings" value="Close" />
           </div>
         </div>        
 
       </div>
     </div>
 
-    <!-- Video and stream preview -->
-    <div class="stream-preview">
+    <!-- Video asset option panel -->
+    <div class="dark-overlay" id="videoasset-options-panel">
+      <div class="popup">
 
-        <!-- Camera preview -->
-        <div class="camera-image">
-          <video autoplay muted id="camera-image"></video>
+        <input type="hidden" id="asset_option_id" />
+        <input type="hidden" id="asset_option_type" />
+
+        <div class="selector">
+            <div>Name of asset:</div>
+            <input type="text" value="" id="asset_option_name" class="fullwidth" />
         </div>
-  
-        <!-- Stream feedback -->
-        <div class="camera-image">
-            <video autoplay id="stream-feedback"></video>
+
+        <div class="selector options_image options_video options_audio">
+            <div>Full file path:</div>
+            <div class="fullwidth" >
+              <input type="text" value="" id="asset_option_filename" />
+              <input type="button" value="..." id="btn_asset_new_file" />
+            </div>
         </div>
+
+        <div class="selector" class="options_text">
+            <div>Text:</div>
+            <textarea id="asset_option_text" class="fullwidth"></textarea>
+        </div>
+
+        <div class="selector options_image options_video options_audio">
+            <div>Description, notes:</div>
+            <textarea id="asset_option_description" class="fullwidth"></textarea>
+        </div>
+
+        <div class="selector-row options_text">
+
+          <div class="selector">
+              <div>Font:</div>
+              <select id="asset_option_font">
+                  <option value="Helvetica">Helvetica</option>
+                  <option value="Arial">Arial</option>
+                  <option value="Courier New">Courier New</option>
+                  <option value="Menlo">Menlo</option>
+                  <option value="Garamond">Garamond</option>
+                  <option value="Comic Sans">Comic Sans</option>
+              </select>
+          </div>
+
+          <div class="selector">
+              <div>Font size:</div>
+              <input type="number" value="12" min="6" max="72" id="asset_option_font_size" />
+          </div>
+          
+          <div class="selector">
+              <div>Justify:</div>
+              <select id="asset_option_justify">
+                  <option value="left">Left</option>
+                  <option value="center">Center</option>
+                  <option value="right">Right</option>
+              </select>
+          </div>
+        </div>    
+
+        <div class="selector options_image options_text">
+            <div>Display time, seconds:<br />(0 for no timeout)</div>
+            <input type="number" value="0" min="0" max="120" id="asset_option_display_time" />
+        </div>
+
+        <div class="selector options_video options_audio">
+            <div>Volume:</div>
+            <input type="number" value="50" min="0" max="100" id="asset_option_volume" />
+        </div>          
+        
+        <div class="selector options_image options_video options_text">
+          <div>Position, X, Y (ignored if centered):</div>
+          <input type="number" value="0" min="-5000" max="5000" id="asset_option_x" /> ; <input type="number" value="0" min="-5000" max="5000" id="asset_option_y" />
+        </div>
+        
+        <div class="selector-row options_video options_audio">
+          <div class="selector">
+            <div>Start time:</div>
+            <input type="number" value="0" min="0" max="59" id="asset_option_start_minute" /> :
+            <input type="number" value="0" min="0" max="59" id="asset_option_start_second" />
+          </div>
+
+          <div class="selector">
+            <div>End time:</div>
+            <input type="number" value="0" min="0" max="59" id="asset_option_end_minute" /> :
+            <input type="number" value="0" min="0" max="59" id="asset_option_end_second" />
+            <p><input type="checkbox" id="asset_option_until_end" /><label for="asset_option_until_end">Until the end</label></p>
+          </div>          
+        </div>
+
+        <!-- Checkboxes -->
+          <div class="selector">
+            <p class="options_text"><input type="checkbox" id="asset_option_outline" checked /><label for="asset_option_outline">Black outline</label></p>
+            <p class="options_image options_video"><input type="checkbox" id="asset_option_resize" /><label for="asset_option_resize">Resize if too big</label></p>
+            <p class="options_image options_video"><input type="checkbox" id="asset_option_center" /><label for="asset_option_center">Center</label></p>
+            <p class="options_text"><input type="checkbox" checked id="asset_option_horizontal_center" /><label for="asset_option_center">Horizontal center</label></p>
+            <p class="options_text"><input type="checkbox" id="asset_option_vertical_center" /><label for="asset_option_center">Vertical center</label></p>
+            <p class="options_image options_video"><input type="checkbox" id="asset_option_black" /><label for="asset_option_black">Black background</label></p>
+            <p class="options_video"><input type="checkbox" id="asset_option_fade" /><label for="asset_option_fade">Fade in and out</label></p>
+            <p class="options_video"><input type="checkbox" id="asset_option_mute" /><label for="asset_option_mute">Mute</label></p>
+            <p class="options_video"><input type="checkbox" id="asset_option_hide_when_ended" /><label for="asset_option_hide_when_ended">Hide when ended</label></p>
+            <p class="options_audio options_video"><input type="checkbox" id="asset_option_loop" /><label for="asset_option_loop">Loop</label></p>
+            <p class="options_audio options_video"><input type="checkbox" id="asset_option_mic_off" /><label for="asset_option_mic_off">Microphone off</label></p>
+        </div>   
+
+        <div class="selector">
+          <div class="row">
+            <input type="button" id="btn_accept_asset_changes" value="Accept" />
+            <input type="button"  id="btn_close_asset_options" value="Cancel" />
+          </div>
+        </div>        
+
+      </div>
     </div>
 
-    <!-- Media selector preview -->
-    <div class="overlay-selector">
+    <div class="mainwindow">
 
-      <div class="media-preview-container">
-        <div class="camera-image small">
-            <img id="media_preview_image" class="media-preview" />
-            <video id="media_preview_video" muted autoplay loop class="media-preview"></video>
-            <audio id="media_preview_audio" controls muted class="media-preview audio"></audio> 
+      <!-- Camera preview -->
+      <div class="left-side">
+        <div class="camera-image">
+          <canvas id="canvas-overlay"></canvas>
+          <video autoplay muted playsinline id="camera-image"></video>
         </div>
 
-        <div class="media-list-buttons">
-          <input type="button" value="Mutatás" id="btn_show_media" />
-          <input type="button" value="Mutatás hang nélkül" id="btn_show_media_nosound" />
-        </div>
-      </div>      
-
-      <!-- Media files list -->
-      <div class="media-list">
-        Képek, videók, hangok:<br />
-        <select id="media-list" size="10"></select>
-
-        <div class="media-list-buttons">
-          <input type="button" value="Új" id="btn_media_new" />
-          <input type="button" value="Törlés" id="btn_media_delete" />
-          <input type="button" value="Fel" id="btn_media_up" />
-          <input type="button" value="Le" id="btn_media_down" />
-          <input type="button" value="Mentés" id="btn_media_save" />
-          <input type="button" value="Betöltés" id="btn_media_load" />
+        <div class="button-container">
+          <input type="button" id="btn_start" value="START" />
+          <div id="recording_status">
+            <span class="rec_status_row" id="status_time">00:00:00</span>
+            <span class="rec_status_row" id="status_filesize">3.65 GB</span>
+            <span class="rec_status_row" id="status_resolution">No resolution</span>
+          </div>
         </div>
       </div>
 
-      <!-- Buttons and shit -->
-      <div class="control-panel">
-        <input type="button" value="Beállítások" id="btn_open_settings" /><br />
+      <!-- Right side panel -->
+      <div class="right-side">
 
-        <input type="button" id="btn-start" value="START" />
+        <!-- Show/hide buttons -->
+        <div class="media-list-buttons">
+          <input type="button" value="Show overlay" id="btn_show_media" />
+          <input type="button" value="Show w/o audio" id="btn_show_media_nosound" />
+          <input type="button" value="Hide" id="btn_hide_media" />
+        </div>
 
-      </div>      
+        <!-- Media files list -->
+        <div class="media-list-wrapper">
+          <select id="media-list" multiple size="10"></select>
+          <div class="media-list-move-buttons">
+            <input type="button" value="&#9650;" id="btn_media_up" />
+            <input type="button" value="&#9660;" id="btn_media_down" />
+          </div>
+        </div>
+
+        <div class="media-list-buttons">
+          <input type="button" value="Add" id="btn_media_new" />
+          <input type="button" value="Add text" id="btn_media_text" />
+          <input type="button" value="Remove" id="btn_media_delete" />
+          <input type="button" value="Save list" id="btn_media_save" />
+          <input type="button" value="Load list" id="btn_media_load" />
+          <input type="button" value="Settings" id="btn_open_settings" /><br />
+        </div>
+
+        <textarea id="notes" placeholder="Write notes here"></textarea>
+
+      </div>
+
     </div>
 
     <script type="text/javascript" src="./index.js"></script>
-    <script src="./renderer.js"></script>
+    <script type="text/javascript" src="./renderer.js"></script>
+    <script src="./scripts/RecordRTC.js"></script>
+
   </body>
 </html>

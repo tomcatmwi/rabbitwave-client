@@ -12,5 +12,9 @@ window.addEventListener('DOMContentLoaded', () => {
 })
 
 contextBridge.exposeInMainWorld('electron', {
-  openDialog: (method, config) => ipcRenderer.invoke('dialog', method, config)
+  openDialog: (method, config) => ipcRenderer.invoke('dialog', method, config),
+  pathSeparator: () => ipcRenderer.invoke('pathSeparator'),
+  nanoid: () => ipcRenderer.invoke('nanoid'),
+  saveJSON: (path, data) => ipcRenderer.invoke('saveJSON', path, data),
+  loadJSON: (path) => ipcRenderer.invoke('loadJSON', path),
 });
