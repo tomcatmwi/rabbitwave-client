@@ -1,3 +1,6 @@
+@import "./fontawesome/fontawesome";
+@import "./fontawesome/solid.scss";
+
 //  General HTML elements ---------------------------------------------------------------------------------------
 body {
     color: white;
@@ -9,9 +12,9 @@ body {
     overflow: hidden;
 }
 
-input[type=text], input[type=checkbox], input[type=number], input[type=button], select, textarea {
+input[type=text], input[type=checkbox], input[type=number], input[type=button], button, select, textarea {
     background: black;
-    color: gray;        
+    color: lightgray;        
     font-family: Arial, Helvetica, sans-serif;
     font-size: 12pt;
     border: 1px solid gray;
@@ -24,21 +27,31 @@ input[type=text], input[type=checkbox], input[type=number], input[type=button], 
 }
 
 input[type=checkbox] {
-    color: greenyellow;
     border: 1px solid gray;
-    border-radius: 3px;
     cursor: pointer;
 }
 
-input[type=text], input[type=number], textarea {
-    color: white;
-    resize: none;
-}
+input[type=button], button {
+    width: 2.2em;
+    height: 2.2em;
+    cursor: pointer;
 
-input[type=button] {
-    &:active {
+    &:hover, &:active {
         background: darkgray;
         color: white;
+    }
+}
+
+input[type=slider] {
+    background: gray;
+    outline: none;
+    height: 20px; 
+
+    &::-webkit-slider-thumb {
+        background: white;
+        cursor: pointer;
+        width: 20px;
+        height: 20px;
     }
 }
 
@@ -50,6 +63,10 @@ label {
     cursor: pointer;
     user-select: none;
     margin-left: 0.5em;
+}
+
+.text-button {
+    width: auto !important;
 }
 
 //  Popups ---------------------------------------------------------------------------------------
@@ -68,7 +85,10 @@ label {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    visibility: hidden;
+}
+
+.hidden {
+    display: none;
 }
 
 .popup {
@@ -106,8 +126,23 @@ label {
         .fullwidth {
             display: flex;
             flex-wrap: nowrap;
+            align-items: flex-start;
             width: 100%;
-        }        
+            min-width: 100%;
+        }
+        
+        .flex-grow {
+            flex-grow: 2;
+        }
+    }
+
+    .checkbox-selector {
+        @extend .selector;
+        max-height: 8em;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        row-gap: .5em;
     }
     
 }
@@ -139,8 +174,10 @@ label {
             display: grid;
             grid-template-columns: 100%;
             grid-template-rows: 100%;
+            position: relative;
+            background:gray;
 
-            img, video, canvas {
+            canvas {
                 width: 100%;
                 height: 100%;
                 object-fit: contain;
@@ -148,14 +185,58 @@ label {
                 grid-row-end: 1;
                 grid-column-start: 1;
                 grid-column-end: 1;
-            }
-
-            video: {
-                z-index: 900;
-            }
-
-            canvas {
                 z-index: 1000;
+            }
+
+            .preview {
+                position: absolute;
+                top: 0;
+                right: 0;
+                border: 5px solid black;
+                min-width: 15%;
+                min-height: 10%;
+                max-width: 50%;
+                max-height: 60%;
+                width: auto;
+                height: auto;
+                grid-row-start: 1;
+                grid-row-end: 1;
+                grid-column-start: 1;
+                grid-column-end: 1;                
+                z-index: 1500;
+            }
+
+            #preview-audio {
+                border: none;
+                height: auto;
+                width: 15em;
+            }
+
+            #btn_preview_close {
+                position: absolute;
+                top: .75em;
+                right: .75em;
+                color: rgba(255, 255, 255, 0.5);
+                background: rgba(120, 120, 120, 0.5);
+                padding: 1em;
+                border-radius: 50%;
+                width: 2.5em;
+                height: 2.5em;
+                cursor: pointer;
+                border: 0;
+                z-index: 3000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                &.hidden {
+                    display: none;
+                }
+
+                &:active, &:hover {
+                    color: white;
+                    background: rgba(120, 120, 120, 0.8);
+                }
             }
         }
 
@@ -208,10 +289,10 @@ label {
         flex-direction: column;  
         flex-grow: 2;
         height: 100%;
-        padding: 1em 0 1em 1em;
+        padding: 1em;
         min-width: 40vw;
 
-        .media-list-wrapper {
+        .asset-list-wrapper {
 
             height: 50%;
             margin: 1em 0;
@@ -221,18 +302,27 @@ label {
             align-items: stretch;
             justify-content: flex-start;
 
-            #media-list {
+            #asset-list {
                 overflow-x: hidden;
                 overflow-y: auto;
                 width: 100%;
                 height: 100%;
+                margin-right: 1em;
             }
 
-            .media-list-move-buttons {
+            .asset-list-move-buttons {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                justify-content: space-evenly;
+                justify-content: space-between;
+
+                div {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    row-gap: 0.5em;                
+                }
             }
         }
 
@@ -245,13 +335,107 @@ label {
             flex-grow: 2;             
         }
 
-        .media-list-buttons {
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            flex-wrap: wrap;
+        .asset-list-buttons {
+            display: grid;
+            grid-template-rows: 50% 50%;
+            grid-template-columns: 70% 30%;
+            grid-row-gap: .5em;
+            padding-bottom: .5em;
             width: 100%;
-            column-gap: 1em;
+            height: auto;
+            min-width: 100%;
+            padding: 0;
+            margin: 0;
+
+            #asset_controls {
+                grid-row-start: 1;
+                grid-column-start: 2;
+                display: flex;
+                align-items: flex-start;
+                justify-content: flex-end;
+                height: 100%;
+                width: 100%;
+                column-gap: 0.5em;
+            }
+
+            #record_controls {
+                grid-row-start: 2;
+                grid-column-start: 2;                
+                width: auto;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                column-gap: 1em;
+                font-size: 0.75em;
+                text-align: right;
+                color: gray;
+
+                .recording {
+                    color: red !important;
+                    i {
+                        color: red !important;
+                    }
+                }
+            }
+
+            #image_controls {
+                grid-column-start: 1;
+                grid-column-end: 1;                
+                display: flex;
+                flex-direction: row;
+                align-items: flex-start;
+                flex-wrap: nowrap;
+                width: 100%;
+                row-gap: 1em;
+
+                &.hidden {
+                    display: none;
+                }                
+            }            
+
+            #video_controls {
+                grid-column-start: 1;
+                grid-column-end: 2;                     
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                flex-wrap: nowrap;
+                width: 100%;
+                row-gap: 1em;
+
+                &.hidden {
+                    display: none;
+                }
+                
+                .video_controls_row {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: flex-start;
+                    justify-content: space-between;
+                    flex-wrap: nowrap;
+                    width: 100%;
+                    column-gap: 1em;
+
+                    .video_controls_btngroup {
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        justify-content: flex-start;
+                        flex-wrap: nowrap;
+                        column-gap: .5em;
+                    }
+                }
+
+                #video_volume {
+                    width: 10em;
+                }
+            }
+            
+            #video_progress {
+                width: 100%;
+            }
+
         }            
     }
 }

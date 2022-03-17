@@ -1,5 +1,11 @@
-/node_modules
+node_modules
+styles/css
+.git
+.github
+.gitignore
+package-lock.json
 *.webm
 *.mp4
 *.mp3
 *.avi
+*.mp3

@@ -1,3 +1,288 @@
+/*!
+ * Font Awesome Pro 5.15.4 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License)
+ */
+.fa,
+.fas,
+.far,
+.fal,
+.fad,
+.fab {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1; }
+
+.fa-lg {
+  font-size: 1.33333em;
+  line-height: 0.75em;
+  vertical-align: -.0667em; }
+
+.fa-xs {
+  font-size: .75em; }
+
+.fa-sm {
+  font-size: .875em; }
+
+.fa-1x {
+  font-size: 1em; }
+
+.fa-2x {
+  font-size: 2em; }
+
+.fa-3x {
+  font-size: 3em; }
+
+.fa-4x {
+  font-size: 4em; }
+
+.fa-5x {
+  font-size: 5em; }
+
+.fa-6x {
+  font-size: 6em; }
+
+.fa-7x {
+  font-size: 7em; }
+
+.fa-8x {
+  font-size: 8em; }
+
+.fa-9x {
+  font-size: 9em; }
+
+.fa-10x {
+  font-size: 10em; }
+
+.fa-fw {
+  text-align: center;
+  width: 1.25em; }
+
+.fa-ul {
+  list-style-type: none;
+  margin-left: 2.5em;
+  padding-left: 0; }
+  .fa-ul > li {
+    position: relative; }
+
+.fa-li {
+  left: -2em;
+  position: absolute;
+  text-align: center;
+  width: 2em;
+  line-height: inherit; }
+
+.fa-border {
+  border: solid 0.08em #eee;
+  border-radius: .1em;
+  padding: .2em .25em .15em; }
+
+.fa-pull-left {
+  float: left; }
+
+.fa-pull-right {
+  float: right; }
+
+.fa.fa-pull-left,
+.fas.fa-pull-left,
+.far.fa-pull-left,
+.fal.fa-pull-left,
+.fab.fa-pull-left {
+  margin-right: .3em; }
+
+.fa.fa-pull-right,
+.fas.fa-pull-right,
+.far.fa-pull-right,
+.fal.fa-pull-right,
+.fab.fa-pull-right {
+  margin-left: .3em; }
+
+.fa-spin {
+  animation: fa-spin 2s infinite linear; }
+
+.fa-pulse {
+  animation: fa-spin 1s infinite steps(8); }
+
+@keyframes fa-spin {
+  0% {
+    transform: rotate(0deg); }
+  100% {
+    transform: rotate(360deg); } }
+
+.fa-rotate-90 {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=1)";
+  transform: rotate(90deg); }
+
+.fa-rotate-180 {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)";
+  transform: rotate(180deg); }
+
+.fa-rotate-270 {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=3)";
+  transform: rotate(270deg); }
+
+.fa-flip-horizontal {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0, mirror=1)";
+  transform: scale(-1, 1); }
+
+.fa-flip-vertical {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1)";
+  transform: scale(1, -1); }
+
+.fa-flip-both, .fa-flip-horizontal.fa-flip-vertical {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1)";
+  transform: scale(-1, -1); }
+
+:root .fa-rotate-90,
+:root .fa-rotate-180,
+:root .fa-rotate-270,
+:root .fa-flip-horizontal,
+:root .fa-flip-vertical,
+:root .fa-flip-both {
+  filter: none; }
+
+.fa-stack {
+  display: inline-block;
+  height: 2em;
+  line-height: 2em;
+  position: relative;
+  vertical-align: middle;
+  width: 2.5em; }
+
+.fa-stack-1x,
+.fa-stack-2x {
+  left: 0;
+  position: absolute;
+  text-align: center;
+  width: 100%; }
+
+.fa-stack-1x {
+  line-height: inherit; }
+
+.fa-stack-2x {
+  font-size: 2em; }
+
+.fa-inverse {
+  color: #fff; }
+
+/* Font Awesome uses the Unicode Private Use Area (PUA) to ensure screen
+readers do not read off random characters that represent icons */
+.fa-arrow-alt-down:before {
+  content: "\f354"; }
+
+.fa-arrow-alt-up:before {
+  content: "\f357"; }
+
+.fa-check:before {
+  content: "\f00c"; }
+
+.fa-circle:before {
+  content: "\f111"; }
+
+.fa-clock:before {
+  content: "\f017"; }
+
+.fa-clone:before {
+  content: "\f24d"; }
+
+.fa-cog:before {
+  content: "\f013"; }
+
+.fa-eject:before {
+  content: "\f052"; }
+
+.fa-eye:before {
+  content: "\f06e"; }
+
+.fa-eye-slash:before {
+  content: "\f070"; }
+
+.fa-folder-open:before {
+  content: "\f07c"; }
+
+.fa-music:before {
+  content: "\f001"; }
+
+.fa-pause:before {
+  content: "\f04c"; }
+
+.fa-play:before {
+  content: "\f04b"; }
+
+.fa-plus:before {
+  content: "\f067"; }
+
+.fa-redo:before {
+  content: "\f01e"; }
+
+.fa-save:before {
+  content: "\f0c7"; }
+
+.fa-sliders-h:before {
+  content: "\f1de"; }
+
+.fa-stop:before {
+  content: "\f04d"; }
+
+.fa-text:before {
+  content: "\f893"; }
+
+.fa-times:before {
+  content: "\f00d"; }
+
+.fa-trash-alt:before {
+  content: "\f2ed"; }
+
+.fa-video:before {
+  content: "\f03d"; }
+
+.fa-volume:before {
+  content: "\f6a8"; }
+
+.fa-volume-down:before {
+  content: "\f027"; }
+
+.fa-volume-mute:before {
+  content: "\f6a9"; }
+
+.sr-only {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px; }
+
+.sr-only-focusable:active, .sr-only-focusable:focus {
+  clip: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  position: static;
+  width: auto; }
+
+/*!
+ * Font Awesome Pro 5.15.4 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License)
+ */
+@font-face {
+  font-family: 'Font Awesome 5 Pro';
+  font-style: normal;
+  font-weight: 900;
+  font-display: block;
+  src: url("../webfonts/fa-solid-900.eot");
+  src: url("../webfonts/fa-solid-900.eot?#iefix") format("embedded-opentype"), url("../webfonts/fa-solid-900.woff2") format("woff2"), url("../webfonts/fa-solid-900.woff") format("woff"), url("../webfonts/fa-solid-900.ttf") format("truetype"), url("../webfonts/fa-solid-900.svg#fontawesome") format("svg"); }
+
+.fa,
+.fas {
+  font-family: 'Font Awesome 5 Pro';
+  font-weight: 900; }
+
 body {
   color: white;
   background: black;
@@ -7,30 +292,38 @@ body {
   font-size: 12pt;
   overflow: hidden; }
 
-input[type=text], input[type=checkbox], input[type=number], input[type=button], select, textarea {
+input[type=text], input[type=checkbox], input[type=number], input[type=button], button, select, textarea {
   background: black;
-  color: gray;
+  color: lightgray;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 12pt;
   border: 1px solid gray;
   padding: 0.5em; }
-  input[type=text].fullwidth, input[type=checkbox].fullwidth, input[type=number].fullwidth, input[type=button].fullwidth, select.fullwidth, textarea.fullwidth {
+  input[type=text].fullwidth, input[type=checkbox].fullwidth, input[type=number].fullwidth, input[type=button].fullwidth, button.fullwidth, select.fullwidth, textarea.fullwidth {
     width: 100%;
     box-sizing: border-box; }
 
 input[type=checkbox] {
-  color: greenyellow;
   border: 1px solid gray;
-  border-radius: 3px;
   cursor: pointer; }
 
-input[type=text], input[type=number], textarea {
-  color: white;
-  resize: none; }
+input[type=button], button {
+  width: 2.2em;
+  height: 2.2em;
+  cursor: pointer; }
+  input[type=button]:hover, input[type=button]:active, button:hover, button:active {
+    background: darkgray;
+    color: white; }
 
-input[type=button]:active {
-  background: darkgray;
-  color: white; }
+input[type=slider] {
+  background: gray;
+  outline: none;
+  height: 20px; }
+  input[type=slider]::-webkit-slider-thumb {
+    background: white;
+    cursor: pointer;
+    width: 20px;
+    height: 20px; }
 
 div {
   box-sizing: border-box; }
@@ -39,6 +332,9 @@ label {
   cursor: pointer;
   user-select: none;
   margin-left: 0.5em; }
+
+.text-button {
+  width: auto !important; }
 
 .dark-overlay {
   position: fixed;
@@ -53,8 +349,10 @@ label {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-  visibility: hidden; }
+  justify-content: center; }
+
+.hidden {
+  display: none; }
 
 .popup {
   width: auto;
@@ -76,16 +374,26 @@ label {
     align-items: flex-start;
     justify-content: space-between;
     flex-wrap: nowrap; }
-  .popup .selector {
+  .popup .selector, .popup .checkbox-selector {
     width: 100%;
     height: auto;
     margin-bottom: 1em; }
-    .popup .selector.gap {
+    .popup .selector.gap, .popup .gap.checkbox-selector {
       margin-right: 1em; }
-    .popup .selector .fullwidth {
+    .popup .selector .fullwidth, .popup .checkbox-selector .fullwidth {
       display: flex;
       flex-wrap: nowrap;
-      width: 100%; }
+      align-items: flex-start;
+      width: 100%;
+      min-width: 100%; }
+    .popup .selector .flex-grow, .popup .checkbox-selector .flex-grow {
+      flex-grow: 2; }
+  .popup .checkbox-selector {
+    max-height: 8em;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    row-gap: .5em; }
 
 .mainwindow {
   width: 100vw;
@@ -110,17 +418,58 @@ label {
       display: grid;
       grid-template-columns: 100%;
       grid-template-rows: 100%;
-      video-z-index: 900; }
-      .mainwindow .left-side .camera-image img, .mainwindow .left-side .camera-image video, .mainwindow .left-side .camera-image canvas {
+      position: relative;
+      background: gray; }
+      .mainwindow .left-side .camera-image canvas {
         width: 100%;
         height: 100%;
         object-fit: contain;
         grid-row-start: 1;
         grid-row-end: 1;
         grid-column-start: 1;
-        grid-column-end: 1; }
-      .mainwindow .left-side .camera-image canvas {
+        grid-column-end: 1;
         z-index: 1000; }
+      .mainwindow .left-side .camera-image .preview {
+        position: absolute;
+        top: 0;
+        right: 0;
+        border: 5px solid black;
+        min-width: 15%;
+        min-height: 10%;
+        max-width: 50%;
+        max-height: 60%;
+        width: auto;
+        height: auto;
+        grid-row-start: 1;
+        grid-row-end: 1;
+        grid-column-start: 1;
+        grid-column-end: 1;
+        z-index: 1500; }
+      .mainwindow .left-side .camera-image #preview-audio {
+        border: none;
+        height: auto;
+        width: 15em; }
+      .mainwindow .left-side .camera-image #btn_preview_close {
+        position: absolute;
+        top: .75em;
+        right: .75em;
+        color: rgba(255, 255, 255, 0.5);
+        background: rgba(120, 120, 120, 0.5);
+        padding: 1em;
+        border-radius: 50%;
+        width: 2.5em;
+        height: 2.5em;
+        cursor: pointer;
+        border: 0;
+        z-index: 3000;
+        display: flex;
+        align-items: center;
+        justify-content: center; }
+        .mainwindow .left-side .camera-image #btn_preview_close.hidden {
+          display: none; }
+        .mainwindow .left-side .camera-image #btn_preview_close:active, .mainwindow .left-side .camera-image #btn_preview_close:hover {
+          color: white;
+          background: rgba(120, 120, 120, 0.8); }
     .mainwindow .left-side .button-container {
       width: 100%;
       display: flex;
@@ -156,9 +505,9 @@ label {
     flex-direction: column;
     flex-grow: 2;
     height: 100%;
-    padding: 1em 0 1em 1em;
+    padding: 1em;
     min-width: 40vw; }
-    .mainwindow .right-side .media-list-wrapper {
+    .mainwindow .right-side .asset-list-wrapper {
       height: 50%;
       margin: 1em 0;
       flex-grow: 2;
@@ -166,16 +515,23 @@ label {
       flex-direction: row;
       align-items: stretch;
       justify-content: flex-start; }
-      .mainwindow .right-side .media-list-wrapper #media-list {
+      .mainwindow .right-side .asset-list-wrapper #asset-list {
         overflow-x: hidden;
         overflow-y: auto;
         width: 100%;
-        height: 100%; }
-      .mainwindow .right-side .media-list-wrapper .media-list-move-buttons {
+        height: 100%;
+        margin-right: 1em; }
+      .mainwindow .right-side .asset-list-wrapper .asset-list-move-buttons {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: space-evenly; }
+        justify-content: space-between; }
+        .mainwindow .right-side .asset-list-wrapper .asset-list-move-buttons div {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          row-gap: 0.5em; }
     .mainwindow .right-side #notes {
       overflow-x: auto;
       overflow-y: auto;
@@ -183,10 +539,80 @@ label {
       resize: none;
       margin: 1em 0;
       flex-grow: 2; }
-    .mainwindow .right-side .media-list-buttons {
-      display: flex;
-      flex-direction: row;
-      align-items: flex-start;
-      flex-wrap: wrap;
+    .mainwindow .right-side .asset-list-buttons {
+      display: grid;
+      grid-template-rows: 50% 50%;
+      grid-template-columns: 70% 30%;
+      grid-row-gap: .5em;
+      padding-bottom: .5em;
       width: 100%;
-      column-gap: 1em; }
+      height: auto;
+      min-width: 100%;
+      padding: 0;
+      margin: 0; }
+      .mainwindow .right-side .asset-list-buttons #asset_controls {
+        grid-row-start: 1;
+        grid-column-start: 2;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-end;
+        height: 100%;
+        width: 100%;
+        column-gap: 0.5em; }
+      .mainwindow .right-side .asset-list-buttons #record_controls {
+        grid-row-start: 2;
+        grid-column-start: 2;
+        width: auto;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        column-gap: 1em;
+        font-size: 0.75em;
+        text-align: right;
+        color: gray; }
+        .mainwindow .right-side .asset-list-buttons #record_controls .recording {
+          color: red !important; }
+          .mainwindow .right-side .asset-list-buttons #record_controls .recording i {
+            color: red !important; }
+      .mainwindow .right-side .asset-list-buttons #image_controls {
+        grid-column-start: 1;
+        grid-column-end: 1;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        width: 100%;
+        row-gap: 1em; }
+        .mainwindow .right-side .asset-list-buttons #image_controls.hidden {
+          display: none; }
+      .mainwindow .right-side .asset-list-buttons #video_controls {
+        grid-column-start: 1;
+        grid-column-end: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        width: 100%;
+        row-gap: 1em; }
+        .mainwindow .right-side .asset-list-buttons #video_controls.hidden {
+          display: none; }
+        .mainwindow .right-side .asset-list-buttons #video_controls .video_controls_row {
+          display: flex;
+          flex-direction: row;
+          align-items: flex-start;
+          justify-content: space-between;
+          flex-wrap: nowrap;
+          width: 100%;
+          column-gap: 1em; }
+          .mainwindow .right-side .asset-list-buttons #video_controls .video_controls_row .video_controls_btngroup {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            flex-wrap: nowrap;
+            column-gap: .5em; }
+        .mainwindow .right-side .asset-list-buttons #video_controls #video_volume {
+          width: 10em; }
+      .mainwindow .right-side .asset-list-buttons #video_progress {
+        width: 100%; }

@@ -1,0 +1,29 @@
+/* Font Awesome uses the Unicode Private Use Area (PUA) to ensure screen
+readers do not read off random characters that represent icons */
+
+.#{$fa-css-prefix}-arrow-alt-down:before { content: fa-content($fa-var-arrow-alt-down); }
+.#{$fa-css-prefix}-arrow-alt-up:before { content: fa-content($fa-var-arrow-alt-up); }
+.#{$fa-css-prefix}-check:before { content: fa-content($fa-var-check); }
+.#{$fa-css-prefix}-circle:before { content: fa-content($fa-var-circle); }
+.#{$fa-css-prefix}-clock:before { content: fa-content($fa-var-clock); }
+.#{$fa-css-prefix}-clone:before { content: fa-content($fa-var-clone); }
+.#{$fa-css-prefix}-cog:before { content: fa-content($fa-var-cog); }
+.#{$fa-css-prefix}-eject:before { content: fa-content($fa-var-eject); }
+.#{$fa-css-prefix}-eye:before { content: fa-content($fa-var-eye); }
+.#{$fa-css-prefix}-eye-slash:before { content: fa-content($fa-var-eye-slash); }
+.#{$fa-css-prefix}-folder-open:before { content: fa-content($fa-var-folder-open); }
+.#{$fa-css-prefix}-music:before { content: fa-content($fa-var-music); }
+.#{$fa-css-prefix}-pause:before { content: fa-content($fa-var-pause); }
+.#{$fa-css-prefix}-play:before { content: fa-content($fa-var-play); }
+.#{$fa-css-prefix}-plus:before { content: fa-content($fa-var-plus); }
+.#{$fa-css-prefix}-redo:before { content: fa-content($fa-var-redo); }
+.#{$fa-css-prefix}-save:before { content: fa-content($fa-var-save); }
+.#{$fa-css-prefix}-sliders-h:before { content: fa-content($fa-var-sliders-h); }
+.#{$fa-css-prefix}-stop:before { content: fa-content($fa-var-stop); }
+.#{$fa-css-prefix}-text:before { content: fa-content($fa-var-text); }
+.#{$fa-css-prefix}-times:before { content: fa-content($fa-var-times); }
+.#{$fa-css-prefix}-trash-alt:before { content: fa-content($fa-var-trash-alt); }
+.#{$fa-css-prefix}-video:before { content: fa-content($fa-var-video); }
+.#{$fa-css-prefix}-volume:before { content: fa-content($fa-var-volume); }
+.#{$fa-css-prefix}-volume-down:before { content: fa-content($fa-var-volume-down); }
+.#{$fa-css-prefix}-volume-mute:before { content: fa-content($fa-var-volume-mute); }

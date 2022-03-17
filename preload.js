@@ -17,4 +17,8 @@ contextBridge.exposeInMainWorld('electron', {
   nanoid: () => ipcRenderer.invoke('nanoid'),
   saveJSON: (path, data) => ipcRenderer.invoke('saveJSON', path, data),
   loadJSON: (path) => ipcRenderer.invoke('loadJSON', path),
+  store_get: (key) => ipcRenderer.invoke('store_get', key),
+  store_set: (key, value) => ipcRenderer.invoke('store_set', key, value),
+  store_delete: (key) => ipcRenderer.invoke('store_delete', key),
+
 });

@@ -2,7 +2,10 @@
 const { app, ipcMain, dialog, BrowserWindow } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const Store = require('electron-store');
 const { nanoid } = require('nanoid');
+
+const store = new Store();
 
 function createWindow() {
   // Create the browser window.
@@ -36,13 +39,14 @@ function createWindow() {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(async () => {
 
-
-  //  Open any dialog
   ipcMain.handle('dialog', (event, method, params) => dialog[method](params));
   ipcMain.handle('pathSeparator', () => path.sep);
   ipcMain.handle('nanoid', () => nanoid());
-  ipcMain.handle('saveJSON', (event, path, data) => saveJSON(path, data))
-  ipcMain.handle('loadJSON', (event, path) => loadJSON(path))
+  ipcMain.handle('saveJSON', (event, path, data) => saveJSON(path, data));
+  ipcMain.handle('loadJSON', (event, path) => loadJSON(path));
+  ipcMain.handle('store_get', (event, key) => store.get(key));
+  ipcMain.handle('store_set', (event, key, value) => store.set(key, value));
+  ipcMain.handle('store_delete', (event, key) => store.delete(key));
 
   createWindow();
 
@@ -77,8 +81,6 @@ function saveJSON(path, data) {
 }
 
 function loadJSON(path) {
-  console.log(path);
-
   return new Promise((resolve, reject) => {
     try {
       const data = JSON.parse(fs.readFileSync(path, { encoding: 'utf8' }));

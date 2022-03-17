@@ -20,7 +20,7 @@ const extensions = {
 }
 
 //  Aggregates all extensions into one array
-const getAllExtensions = () => {
+function getAllExtensions() {
     let retval = [];
     Object.keys(extensions).forEach(key => retval = retval.concat(extensions[key]));
     return retval;
@@ -38,19 +38,21 @@ const VideoAsset = {
     description: null,          //  notes or description
 
     //  text only
-    text: null,                 //  Text
-    fontSize: 12,               //  Font size
+    text: 'Sample text',        //  Text
+    fontSize: 50,               //  Font size
     font: 'Helvetica',          //  Font name
-    justify: 'center',          //  Justification: "left", "center", "right"
+    align: 'center',            //  Justification: "left", "center", "right"
     horizontalCenter: true,     //  Center horizontally on screen
     verticalCenter: true,       //  Center vertically on screen
+    lineHeight: 15,             //  Line height if multiline
     outline: true,              //  Black outline
 
     //  images and text only
     displayTime: 5,             //  time in seconds to display, 0 means stays until manually hidden
 
     //  video and images only
-    resize: true,               //  resize to full screen
+    resizeBig: true,            //  resize if bigger than canvas
+    resizeSmall: true,          //  resize if smaller than canvas
     center: true,               //  center screen
     black: true,                //  black out where it's not covering the camera image
     x: 0,                       //  x position, ignored when stretch === true, for text assets it can be "left", "center", "right"
@@ -62,8 +64,10 @@ const VideoAsset = {
     hideWhenEnded: true,        //  hide automatically when video ends (ignored when loop === true)
 
     //  video and audio only
+    startHour: 0,               //  start position, hours
     startMinute: 0,             //  start position, minutes
     startSecond: 0,             //  start position, seconds
+    endHour: 0,                 //  end position, minutes - 00:00 means play to the end
     endMinute: 0,               //  end position, minutes - 00:00 means play to the end
     endSecond: 0,               //  end position, seconds
     loop: false,                //  loop endlessly
@@ -71,21 +75,71 @@ const VideoAsset = {
     micOff: true                //  disable microphone while playing
 };
 
-//  All video assets (in the list to the right)
+//  App settings
+const appSettings = {
+}
+
+//  All video assets
 let videoAssets = [];
 
 //  Image, video and audio overlays
-let overlayImage = new Image();
+let cameraVideo = document.createElement('video');
+let overlayImage;
 let overlayVideo = document.createElement('video');
 let overlayAudio = document.createElement('audio');
+let overlayCanvas;
+const videoProgress = document.getElementById('video_progress');
+const playIcon = document.getElementById('icon_video_play_pause');
 
-overlayVideo.addEventListener('loadedmetadata', data => {
-    overlayVideo.width = data.path[0].videoWidth;
-    overlayVideo.height = data.path[0].videoHeight;
-})
+//  Temporary data storage
+let currentSelectedAsset;
+let currentOverlayAsset;
+let currentResizeData;
+
+//  Stream settings
+const assetList = document.getElementById('asset-list');
+const videoCanvas = document.getElementById('video-canvas');
+const previewImage = document.getElementById('preview-image');
+const previewVideo = document.getElementById('preview-video');
+const previewAudio = document.getElementById('preview-audio');
+
+//  Stream data
+let outputStream = null;
+let recordRTC = null;
+
+//  Flags
+let dialogOpen = false;
+let videoState = null;
+let recording = false;
 
 //  Setting fields (so we know what to save/load)
+//  This is to be deprecated soon
 const storageFields = ['camera-selector', 'mic-selector', 'output-selector', 'resolution-selector', 'video-codec-selector', 'video-bitrate-selector', 'audio-bitrate-selector', 'filename-selector'];
+
+//  Convert seconds into a formatted timestamp
+function secondsToTime(seconds) {
+    let hours = 0;
+    let minutes = 0;
+
+    while (seconds > 3600) {
+        hours++;
+        seconds -= 3600;
+    }
+
+    while (seconds > 60) {
+        minutes++;
+        seconds -= 60;
+    }
+
+    seconds = Math.round(seconds);
+
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+//  Convert time to seconds
+function timeToSeconds(hours = 0, minutes = 0, seconds = 0) {
+    return Math.round((Number(hours) * 3600) + (Number(minutes) * 60) + Number(seconds));
+}
 
 //  A little fix to the Array object
 Array.prototype.swap = function (x, y) {
@@ -103,18 +157,6 @@ electron.pathSeparator()
         alert('Can\'t determine path separator! Assuming "/".');
         pathSeparator = '/';
     });
-
-//  Stream settings
-const cameraImage = document.getElementById('camera-image');
-const mediaList = document.getElementById('media-list');
-const overlayCanvas = document.getElementById('canvas-overlay');
-
-//  Stream data
-let outputStream = null;
-let recordRTC = null;
-
-//  Flags
-let dialogOpen = false;
 
 function getDevices() {
     return new Promise((resolve, reject) =>
@@ -161,16 +203,17 @@ async function startCamera() {
     inputConstraints.video.height = res[1];
 
     const stream = await navigator.mediaDevices.getUserMedia(inputConstraints)
-        .catch(err => alert(`Nem sikerült aktiválni a kamerát!\n${err.message}`));
-
+        .catch(err => alert(`Failed to activate camera!\n${err.message}`));
     if (!stream) return;
-    cameraImage.srcObject = stream;
-    cameraImage.muted = false;
-    cameraImage.volume = 0;
+
+    cameraVideo.srcObject = stream;
+    cameraVideo.muted = false;
+    cameraVideo.autoplay = true;
+    cameraVideo.volume = 0;
 
     //  Audio device selection
-    // document.getElementById('media_preview_audio').setSinkId(document.getElementById('output-selector').value);
-    cameraImage.setSinkId(document.getElementById('output-selector').value);
+    // document.getElementById('asset_preview_audio').setSinkId(document.getElementById('output-selector').value);
+    cameraVideo.setSinkId(document.getElementById('output-selector').value);
 
     //  Ezt majd uncommentelem,  ha végre implementálják a kurva szabványt...
 
@@ -180,36 +223,400 @@ async function startCamera() {
     //     .then(device => console.log(device))
     //     .catch(err => console.log(err));
 
+    const resolutionInfo = `${document.getElementById('resolution-selector').value}, ${document.getElementById('video-bitrate-selector').value}/${document.getElementById('audio-bitrate-selector').value} bps`;
+
+
+    document.getElementById('record_resolution').innerHTML = resolutionInfo;
+
+    //  ---- Initialize video canvas ----
+
+    videoCanvas.width = inputConstraints.video.width;
+    videoCanvas.height = inputConstraints.video.height;
+
+    const ctx = videoCanvas.getContext('2d');
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = "rgba(0, 0, 0, .8)";
+
+    const cameraLoop = () => {
+        ctx.drawImage(cameraVideo, 0, 0, cameraVideo.videoWidth, cameraVideo.videoHeight);
+
+        //  Black background
+        if ((!!overlayImage || overlayVideo.showing) && currentOverlayAsset.black) {
+            ctx.fillRect(0, 0, videoCanvas.width, videoCanvas.height);
+        }
+
+        //  Superimpose video
+        if (overlayVideo.showing) {
+            ctx.drawImage(
+                overlayVideo,
+                currentResizeData.x,
+                currentResizeData.y,
+                currentResizeData.width,
+                currentResizeData.height
+            )
+        }
+
+        //  Superimpose image
+        if (!!overlayImage)
+            ctx.drawImage(
+                overlayImage,
+                currentResizeData.x,
+                currentResizeData.y,
+                currentResizeData.width,
+                currentResizeData.height
+            );
+
+        //  Superimpose text
+        if (!!overlayCanvas)
+            ctx.drawImage(
+                overlayCanvas,
+                currentResizeData.sx,
+                currentResizeData.sy,
+                currentResizeData.width,
+                currentResizeData.height,
+                currentResizeData.horizontalCenter ? (videoCanvas.width / 2 - currentResizeData.width / 2) : currentResizeData.x,
+                currentResizeData.verticalCenter ? (videoCanvas.height / 2 - currentResizeData.height / 2) : currentResizeData.y,
+                currentResizeData.width,
+                currentResizeData.height
+            );
+
+        setTimeout(cameraLoop, (1000 / 30));
+    };
+
+    cameraLoop();
+}
+
+//  Runs when an asset is clicked on the list.
+//  Selects the current asset and runs the preview.
+function setcurrentSelectedAsset() {
+    const asset = videoAssets.find(x => x.id === assetList.options[assetList.selectedIndex].value) || undefined;
+    if (asset !== currentSelectedAsset)
+        currentSelectedAsset = asset;
+
+    closePreview();
+    document.getElementById('btn_preview_close').classList.remove('hidden');
+
+    switch (currentSelectedAsset.type) {
+        case ('video'):
+            previewVideo.muted = recording;
+            previewVideo.src = currentSelectedAsset.filename;
+            previewVideo.loop = currentSelectedAsset.loop;
+            previewVideo.volume = currentSelectedAsset.volume / 100;
+            previewVideo.muted = currentSelectedAsset.mute;
+            previewVideo.currentTime = timeToSeconds(currentSelectedAsset.startHour, currentSelectedAsset.startMinute, currentSelectedAsset.startSecond);
+            showDOMElement(['preview-video', 'btn_preview_close'], true);
+            break;
+        case ('image'):
+            previewImage.src = currentSelectedAsset.filename;
+            showDOMElement(['preview-image', 'btn_preview_close'], true);
+            break;
+        case ('audio'):
+            previewAudio.src = currentSelectedAsset.filename;
+            previewAudio.loop = currentSelectedAsset.loop;
+            previewAudio.volume = currentSelectedAsset.volume / 100;
+            previewAudio.currentTime = timeToSeconds(currentSelectedAsset.startHour, currentSelectedAsset.startMinute, currentSelectedAsset.startSecond);
+            showDOMElement(['preview-audio', 'btn_preview_close'], true);
+            break;
+    }
+
+    if (currentSelectedAsset.type === 'video' || currentSelectedAsset.type === 'audio') {
+        document.getElementById('video_volume').value = currentSelectedAsset.volume;
+        if (currentSelectedAsset.mute) {
+            document.getElementById('video_mute_icon').classList.remove('fa-volume');
+            document.getElementById('video_mute_icon').classList.add('fa-volume-mute');
+        } else {
+            document.getElementById('video_mute_icon').classList.remove('fa-volume-mute');
+            document.getElementById('video_mute_icon').classList.add('fa-volume');
+        }
+    }
+}
+
+function closePreview() {
+    showDOMElement(['preview-video', 'preview-audio', 'preview-image', 'btn_preview_close'], false);
+    previewVideo.pause();
+    previewAudio.pause();
+}
+
+//  Calculates the proportional size of the current asset
+function resizeAsset(element) {
+    const width = cameraVideo.videoWidth;
+    const height = cameraVideo.videoHeight;
+
+    let elementWidth = element.width;
+    let elementHeight = element.height
+
+    //  Bigger than video
+    if (currentSelectedAsset.resizeBig && (width < elementWidth || height < elementHeight)) {
+        if (elementHeight > height) {
+            elementWidth = (elementWidth / 100) * (height / (elementHeight / 100));
+            elementHeight = height;
+        }
+
+        if (elementWidth > width) {
+            elementHeight = (elementHeight / 100) * (width / (elementWidth / 100));
+            elementWidth = width;
+        }
+    }
+
+    //  Smaller than video
+    else if (currentSelectedAsset.resizeSmall && (width > elementWidth || height > elementHeight)) {
+        if (width > height) {
+            elementWidth = (elementWidth / 100) * (height / (elementHeight / 100));
+            elementHeight = height;
+        }
+
+        if (width < height) {
+            elementHeight = (elementHeight / 100) * (width / (elementWidth / 100));
+            elementWidth = width;
+        }
+    }
+
+    //  Center element if necessary
+    let x = currentSelectedAsset.x;
+    let y = currentSelectedAsset.y;
+
+    if (currentSelectedAsset.center) {
+        x = (width / 2) - (elementWidth / 2);
+        y = (height / 2) - (elementHeight / 2);
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
+    }
+
+    currentResizeData = {
+        width: elementWidth,
+        height: elementHeight,
+        x,
+        y
+    };
+}
+
+//  Starts the timer to make the currently shown image or text disappear
+function setDisappearTimer(time) {
+    if (typeof time === 'undefined')
+        time = currentOverlayAsset.displayTime;
+    if (time > 0) {
+        const id = currentOverlayAsset.id;
+        setTimeout(() => {
+            if (!!currentOverlayAsset && currentOverlayAsset.id === id)
+                hideAsset();
+        }, time * 1000);
+    }
+}
+
+function showImage() {
+    const image = new Image();
+
+    image.onload = () => {
+        closePreview();
+        resizeAsset(image);
+        overlayImage = image;
+        setDisappearTimer();
+        showDOMElement('video_controls', false);
+        showDOMElement('image_controls', true);
+    };
+
+    image.src = currentSelectedAsset.filename;
+}
+
+function showText() {
+    closePreview();
+    assetList.disabled = true;
+
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = videoCanvas.width;
+    tempCanvas.height = videoCanvas.height;
+
+    const ctx = tempCanvas.getContext('2d');
+
+    ctx.fillStyle = 'white';
+    ctx.textAlign = 'left';
+    ctx.font = `${currentSelectedAsset.fontSize}px ${currentSelectedAsset.font}`;
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 6;
+
+    const lineHeight = Number((currentSelectedAsset.fontSize * 1.3).toFixed(2));
+
+    //  Split text to multiple lines
+    let widestLine = 0;
+    const lines = currentSelectedAsset.text.split('\n').map(line => {
+        const width = ctx.measureText(line).width;
+        if (width > widestLine)
+            widestLine = width;
+        return { text: line, width }
+    });
+
+    //  Render text
+    for (let line = 0; line < lines.length; line++) {
+
+        let y = Number(line * lineHeight).toFixed(2);
+        y = Number(y) + Number(lineHeight / 1.75);
+
+        lineLength = ctx.measureText(lines[line]).width;
+
+        if (currentSelectedAsset.outline) {
+            switch (currentSelectedAsset.align) {
+                case ('center'): ctx.strokeText(lines[line].text, (widestLine - lines[line].width) / 2, y); break;
+                case ('right'): ctx.strokeText(lines[line].text, widestLine - lines[line].width, y); break;
+                default: ctx.strokeText(lines[line].text, 0, y);
+            }
+        }
+
+        switch (currentSelectedAsset.align) {
+            case ('center'): ctx.fillText(lines[line].text, (widestLine - lines[line].width) / 2, y); break;
+            case ('right'): ctx.fillText(lines[line].text, widestLine - lines[line].width, y); break;
+            default: ctx.fillText(lines[line].text, 0, y);
+        }
+    }
+
+    //  Find width and height of area to copy text
+
+    //  Get image information
+    imgData = ctx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+
+    //  We only need every 4th value (alpha value for each pixel)
+    let counter = 0;
+    const pixels = Array.from(imgData.data).filter(() => {
+        if (counter === 3) {
+            counter = 0;
+            return true;
+        }
+        counter++;
+        return false;
+    });
+
+    //  Find top and bottom boundaries
+    let top = null;
+    let bottom = null;
+    let left = tempCanvas.width;
+    let right = 0;
+
+    for (let y = 0; y < pixels.length - tempCanvas.width; y += tempCanvas.width) {
+
+        const row = pixels.slice(y, y + tempCanvas.width);
+
+        if (row.some(pixel => pixel > 0)) {
+
+            //  If we have no top yet, then this is it
+            if (top === null)
+                top = y == 0 ? 0 : y / tempCanvas.width;
+
+            //  This is the bottommost row we found so far
+            bottom = y / tempCanvas.width;
+
+            //  Find leftmost and rightmost pixels
+            let leftmost = null;
+            let rightmost = null;
+            for (let x = 0; x < row.length; x++) {
+                if (!!row[x]) {
+                    if (leftmost === null)
+                        leftmost = x;
+                    rightmost = x;
+                }
+            }
+
+            if (leftmost < left) left = leftmost;
+            if (rightmost > right) right = rightmost;
+        }
+    }
+
+    currentResizeData = {
+        x: currentSelectedAsset.x,
+        y: currentSelectedAsset.y,
+        sx: left - 1,
+        sy: top - 1,
+        width: right - left + 1,
+        height: bottom - top + 1,
+        horizontalCenter: currentSelectedAsset.horizontalCenter,
+        verticalCenter: currentSelectedAsset.verticalCenter
+    }
+
+    overlayCanvas = tempCanvas;
+    setDisappearTimer();
+    showDOMElement('video_controls', false);
+    showDOMElement('image_controls', true);
+    assetList.disabled = false;
+}
+
+function showVideo() {
+    closePreview();
+    overlayVideo.pause();
+    overlayVideo.loop = currentSelectedAsset.loop;
+    overlayVideo.autoplay = false;
+    overlayVideo.volume = currentSelectedAsset.volume / 100;
+    overlayVideo.muted = currentSelectedAsset.mute;
+    overlayVideo.src = currentSelectedAsset.filename;
+}
+
+function showAudio() {
+    closePreview();
+}
+
+function hideAsset() {
+    overlayImage = undefined;
+    overlayVideo.pause();
+    overlayVideo.showing = false;
+    overlayAudio.pause();
+    overlayCanvas = undefined;
+    currentOverlayAsset = undefined;
+    videoProgress.value = 0;
+    document.getElementById('video_time').innerHTML = '00:00:00';
+    showDOMElement('video_controls', false);
+    showDOMElement('image_controls', false);
+}
+
+function showAsset() {
+    hideAsset();
+    currentOverlayAsset = currentSelectedAsset;
+
+    switch (currentSelectedAsset.type) {
+        case ('image'): showImage(); break;
+        case ('video'): showVideo(); break;
+        case ('audio'): showAudio(); break;
+        case ('text'): showText(); break;
+        default:
+            alert(`Unsupported asset type: "${currentSelectedAsset.type}"`);
+    }
 }
 
 function saveSettings() {
-    storageFields.forEach(field => {
+    storageFields.forEach(async field => {
         const value = document.getElementById(field).value;
         if (!!value)
-            localStorage.setItem('rw_' + field, value);
+            electron.store_set('rw_' + field, value)
+                .catch(err => alert(err.message));
     });
-    alert('Beállítások elmentve!');
+    alert('Settings saved!');
 }
 
 function loadSettings() {
-    storageFields.forEach(field => {
-        const value = localStorage.getItem('rw_' + field);
-        if (!!value)
-            document.getElementById(field).value = value;
+    storageFields.forEach(async field => {
+        electron.store_get('rw_' + field)
+            .then(value => {
+                if (!!value)
+                    document.getElementById(field).value = value;
+            })
     });
 }
 
-function showPanel(id, status = 'hidden') {
-    document.getElementById(id).style.visibility = status;
+function showDOMElement(id, show) {
+    if (!Array.isArray(id))
+        id = [id];
+
+    id.forEach(id => {
+        if (show)
+            document.getElementById(id).classList.remove('hidden')
+        else
+            document.getElementById(id).classList.add('hidden');
+    });
 }
 
-function addNewMedia() {
+function addNewAsset() {
 
     if (dialogOpen) return;
     dialogOpen = true;
 
     const dialogConfig = {
-        title: 'Add media',
+        title: 'Add asset',
         filters: [
             { name: 'All types', extensions: allExtensions },
             { name: 'Images', extensions: extensions.image },
@@ -223,6 +630,8 @@ function addNewMedia() {
 
     electron.openDialog('showOpenDialog', dialogConfig)
         .then(async result => {
+            const testVideo = document.createElement('video');
+
             if (result.canceled) return;
             result.filePaths.forEach(async file => {
 
@@ -247,7 +656,7 @@ function addNewMedia() {
                 };
 
                 videoAssets.unshift(newAsset);
-                rebuildMediaList();
+                rebuildAssetList();
             });
 
         })
@@ -266,10 +675,10 @@ async function addText() {
     };
 
     videoAssets.unshift(newAsset);
-    rebuildMediaList();
+    rebuildAssetList();
 }
 
-//  Moves values between a video asset and the asset properties panel form
+//  Swaps values between a video asset and the asset properties panel form
 function moveValues(asset, to = 'form') {
 
     const keys = Object.keys(asset);
@@ -292,14 +701,14 @@ function moveValues(asset, to = 'form') {
     })
 }
 
-//  Replace the file in the asset properties panel
+//  Replace the filename in the asset properties panel
 function newAssetFile() {
 
     if (dialogOpen) return;
     dialogOpen = true;
 
     const dialogConfig = {
-        title: 'Replace media',
+        title: 'Replace asset',
         filters: [],
         buttonLabel: 'Replace',
         properties: ['openFile', 'showHiddenFiles', 'dontAddToRecent']
@@ -321,48 +730,80 @@ function newAssetFile() {
 }
 
 function acceptAssetChanges() {
-    const asset = videoAssets.find(x => x.id === mediaList.options[mediaList.selectedIndex].value);
-    moveValues(asset, false);
-    rebuildMediaList();
-    showPanel('videoasset-options-panel', 'hidden');
+    moveValues(currentSelectedAsset, false);
+    rebuildAssetList();
+    showDOMElement('videoasset-options-panel', false);
 }
 
-function showVideoAssetOptions() {
+function showAssetOptions() {
 
-    const asset = videoAssets.find(x => x.id === mediaList.options[mediaList.selectedIndex].value);
+    if (!currentSelectedAsset) return;
 
     let elements = document.querySelectorAll("[class*='options_']");
     for (let i = 0; i < elements.length; i++)
-        elements[i].style.display = 'none';
+        elements[i].classList.add('hidden');
 
-    elements = document.querySelectorAll('.options_' + asset.type);
+    elements = document.querySelectorAll('.options_' + currentSelectedAsset.type);
     for (let i = 0; i < elements.length; i++)
-        elements[i].style.display = elements[i].classList.contains('selector-row') ? 'flex' : 'block';
+        elements[i].classList.remove('hidden');
 
-    moveValues(asset, 'form');
-    showPanel('videoasset-options-panel', 'visible');
-}
-
-function onRightClickMediaList(event) {
+    moveValues(currentSelectedAsset, 'form');
+    showDOMElement('videoasset-options-panel', true);
 }
 
 //  Rebuilds the option list after videoAssets changed
-function rebuildMediaList() {
-    mediaList.options.length = 0;
-    videoAssets.forEach(asset => mediaList.add(new Option(asset.name, asset.id)));
+function rebuildAssetList() {
+    assetList.options.length = 0;
+
+    videoAssets.forEach(asset => {
+        const newOption = new Option(asset.name, asset.id);
+        newOption.addEventListener('contextmenu', (e) => { showAssetOptions(); return false; });
+        newOption.addEventListener('click', setcurrentSelectedAsset);
+        newOption.addEventListener('dblclick', () => !!currentOverlayAsset && currentOverlayAsset.id === asset.id ? hideAsset() : showAsset());
+        assetList.add(newOption);
+    });
 }
 
-function deleteMedia() {
-    if (!mediaList.selectedIndex) return;
-    selected = Array.from(mediaList.selectedOptions).map(x => x.value);
+function cloneAsset() {
+    if (assetList.selectedIndex < 0) return;
+
+    //  goofy way to get ids, but otherwise we'd only get Promises
+    const ids = [];
+    for (t = 0; t < assetList.selectedOptions.length; t++)
+        ids.push(electron.nanoid());
+
+    Promise.all(ids)
+        .then(result => {
+            const clonedAssets = videoAssets
+                .slice(
+                    assetList.selectedIndex,
+                    assetList.selectedIndex + assetList.selectedOptions.length
+                ).map((asset, index) => ({
+                    ...asset,
+                    name: 'COPY OF ' + asset.name,
+                    id: result[index]
+                }));
+
+            videoAssets.splice(assetList.selectedIndex, 0, ...clonedAssets);
+            rebuildAssetList();
+        });
+}
+
+function deleteAsset() {
+    if (assetList.selectedIndex < 0) return;
+    if (!confirm(`Remove ${assetList.selectedOptions.length > 1 ? assetList.selectedOptions.length + ' assets' : 'this asset'}?`, 'Remove'))
+        return;
+
+    selected = Array.from(assetList.selectedOptions).map(x => x.value);
     videoAssets = videoAssets.filter(x => !selected.includes(x.id));
-    rebuildMediaList();
+    rebuildAssetList();
 }
 
-function moveMedia(direction) {
+//  Moves assets up or down in the list
+function moveAsset(direction) {
 
-    if (mediaList.selectedIndex < 0) return;
-    selected = Array.from(mediaList.selectedOptions).map(x => x.value);
+    if (assetList.selectedIndex < 0) return;
+    selected = Array.from(assetList.selectedOptions).map(x => x.value);
 
     const before = videoAssets.findIndex(x => x.id === selected[0]) - 1;
     const after = before + selected.length + 1;
@@ -381,13 +822,13 @@ function moveMedia(direction) {
         videoAssets.splice(before + 1, 0, moveItem[0]);
     }
 
-    rebuildMediaList();
-    for (x = 0; x < mediaList.options.length; x++)
-        if (selected.includes(mediaList.options[x].value))
-            mediaList.options[x].selected = true;
+    rebuildAssetList();
+    for (x = 0; x < assetList.options.length; x++)
+        if (selected.includes(assetList.options[x].value))
+            assetList.options[x].selected = true;
 }
 
-async function saveList() {
+async function saveAssetList() {
 
     if (dialogOpen) return;
     dialogOpen = true;
@@ -407,41 +848,49 @@ async function saveList() {
         .finally(() => dialogOpen = false);
     if (!path) return;
 
-    electron.saveJSON(path, videoAssets)
+    electron.store_set('lastAssetList', path)
+        .catch(err => alert(err.message));
+
+    electron.saveJSON(path, {
+        videoAssets,
+        notes: document.getElementById('notes').value
+    })
         .catch(err => alert(err.message));
 }
 
-async function loadList() {
+async function loadAssetList(path) {
 
-    if (dialogOpen) return;
+    if (dialogOpen && !path) return;
     dialogOpen = true;
 
-    const dialogConfig = {
-        title: 'Load asset list',
-        filters: [
-            { name: 'JSON files', extensions: ['json'] },
-            { name: 'All files', extensions: ['*'] }
-        ],
-        buttonLabel: 'Load',
-        properties: ['openFile', 'showHiddenFiles']
-    };
+    if (!path) {
+        const dialogConfig = {
+            title: 'Load asset list',
+            filters: [
+                { name: 'JSON files', extensions: ['json'] },
+                { name: 'All files', extensions: ['*'] }
+            ],
+            buttonLabel: 'Load',
+            properties: ['openFile', 'showHiddenFiles']
+        };
 
-    const path = await electron.openDialog('showOpenDialog', dialogConfig)
-        .catch(err => alert(err.message))
-        .finally(() => dialogOpen = false);
+        path = await electron.openDialog('showOpenDialog', dialogConfig)
+            .catch(err => alert(err.message))
+            .finally(() => dialogOpen = false);
+    }
 
     if (!path || !path.filePaths.length || path.canceled) return;
 
+    electron.store_set('lastAssetList', path)
+        .catch(err => alert(err.message));
+
     electron.loadJSON(path.filePaths[0])
         .then(data => {
-            videoAssets = data;
-            rebuildMediaList();
+            videoAssets = data.videoAssets;
+            document.getElementById('notes').value = data.notes;
+            rebuildAssetList();
         })
         .catch(err => alert(err.message));
-}
-
-function startStream(stream) {
-    cameraImage.srcObject(stream);
 }
 
 async function startRecording() {
@@ -465,7 +914,7 @@ async function startRecording() {
 
     recordRTC = RecordRTC(cameraImage.srcObject, {
         type: 'video',
-        recorderType: MediaStreamRecorder,
+        recorderType: AssetStreamRecorder,
         mimeType: document.getElementById('video-codec-selector').value,
         disableLogs: true,
         audioBitsPerSecond: document.getElementById('audio-bitrate-selector').value,
@@ -474,113 +923,135 @@ async function startRecording() {
     recordRTC.startRecording();
 }
 
-//  Calculates the proportional size of a video or image
-function resizeAsset(assetData, element) {
-    const width = cameraImage.getBoundingClientRect().width;
-    const height = cameraImage.getBoundingClientRect().height;
-
-    let newWidth = element.width;
-    let newHeight = element.height
-
-    if (assetData.resize) {
-        if (newHeight > height) {
-            newWidth = (newWidth / 100) * (height / (newHeight / 100));
-            newHeight = height;
-        }
-
-        if (newWidth > width) {
-            newHeight = (newHeight / 100) * (width / (newWidth / 100));
-            newWidth = width;
-        }
-    }
-
-    let x = assetData.x;
-    let y = assetData.y;
-
-    if (assetData.center) {
-        x = (width / 2) - (newWidth / 2);
-        y = (height / 2) - (newHeight / 2);
-        if (x < 0) x = 0;
-        if (y < 0) y = 0;
-    }
-
-    return {
-        width: newWidth,
-        height: newHeight,
-        x,
-        y
-    };
-}
-
-function resetOverlays() {
-    const ctx = overlayCanvas.getContext('2d');
-    ctx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
-
-    if (!!overlayVideo)
+function onPlayVideo() {
+    if (playIcon.classList.contains('fa-pause')) {
         overlayVideo.pause();
-
-    if (!!overlayAudio)
         overlayAudio.pause();
-
-    overlayImage = new Image();
+    } else {
+        overlayVideo.play();
+        overlayAudio.play();
+    }
 }
 
-function showMedia() {
-    const asset = videoAssets.find(x => x.id === mediaList.options[mediaList.selectedIndex].value);
-    if (!overlayCanvas.getContext) return;
+function onStopVideo() {
+    overlayVideo.currentTime = 0;
+    overlayAudio.currentTime = 0;
+    overlayVideo.pause();
+    overlayAudio.pause();
+}
 
-    resetOverlays();
+function onMuteVideo(value) {
+    if (typeof value !== 'undefined')
+        overlayVideo.muted = value
+    else
+        overlayVideo.muted = !overlayVideo.muted;
 
-    let ctx = overlayCanvas.getContext('2d');
-
-    overlayCanvas.width = cameraImage.getBoundingClientRect().width;
-    overlayCanvas.height = cameraImage.getBoundingClientRect().height;
-
-    //  Black background
-    if (asset.black && (asset.type === 'image' || asset.type === 'video')) {
-        ctx.fillStyle = "rgba(0, 0, 0, .8)";
-        ctx.fillRect(0, 0, cameraImage.getBoundingClientRect().width, cameraImage.getBoundingClientRect().height);
+    if (overlayVideo.muted) {
+        document.getElementById('video_mute_icon').classList.remove('fa-volume');
+        document.getElementById('video_mute_icon').classList.add('fa-volume-mute');
+    } else {
+        document.getElementById('video_mute_icon').classList.remove('fa-volume-mute');
+        document.getElementById('video_mute_icon').classList.add('fa-volume');
     }
+}
 
-    if (asset.type === 'image') {
-        overlayImage.onload = () => {
-            const resized = resizeAsset(asset, overlayImage);
-            ctx.drawImage(overlayImage, resized.x, resized.y, resized.width, resized.height);
-        };
-        overlayImage.src = asset.filename;
-    }
-
-    if (asset.type === 'video') {
-        overlayVideo.loop = asset.loop;
-        overlayVideo.volume = asset.volume / 100;
-        overlayVideo.muted = asset.mute;
-
-        let resized;
-
-        const videoLoop = () => {
-            if (!overlayVideo.paused && !overlayVideo.ended) {
-                ctx.drawImage(overlayVideo, resized.x, resized.y, resized.width, resized.height);
-                setTimeout(videoLoop, 1000 / 30);
-            }
-        }
-
-        overlayVideo.addEventListener('loadeddata', data => {
-            if (!resized) {
-                resized = resizeAsset(asset, overlayVideo);
-                overlayVideo.play();
-                setTimeout(videoLoop, 1000 / 30);
-            }
-        });
-        overlayVideo.src = asset.filename;
-    }
-
-
-
+function onSetVolume(e) {
+    const volume = e.target.value;
+    currentSelectedAsset.volume = volume;
+    overlayAudio.volume = volume / 100;
+    overlayVideo.volume = volume / 100;
 }
 
 function initUIBindings() {
 
-    showPanel('videoasset-options-panel', 'hidden');
+    previewVideo.addEventListener('volumechange', e => {
+        currentSelectedAsset.volume = e.target.volume * 100;
+        currentSelectedAsset.mute = e.target.muted;
+    });
+
+    previewAudio.addEventListener('volumechange', e => {
+        currentSelectedAsset.volume = e.target.volume * 100;
+        currentSelectedAsset.mute = e.target.muted;
+    });
+
+    previewVideo.addEventListener('loadedmetadata', data => {
+
+        //  Set up video slider now. If we decide to superimpose the video, it'll be already set.
+        const startTime = timeToSeconds(currentSelectedAsset.startHour, currentSelectedAsset.startMinute, currentSelectedAsset.startSecond);
+        let endTime = timeToSeconds(currentSelectedAsset.endHour, currentSelectedAsset.endMinute, currentSelectedAsset.endSecond);
+
+        if (endTime === 0)
+            endTime = data.path[0].duration;
+
+        videoProgress.min = startTime;
+        videoProgress.max = endTime;
+        videoProgress.step = (endTime - startTime) / 500;
+        videoProgress.value = startTime;
+    });
+
+    previewVideo.addEventListener('timeupdate', () => {
+
+        //  Do not let the user seek outside the time boundaries set for the asset
+        if (previewVideo.currentTime < videoProgress.min) {
+            previewVideo.currentTime = videoProgress.min;
+            previewVideo.pause();
+            alert(`Start time reached (${secondsToTime(videoProgress.min)})`);
+        }
+        if (previewVideo.currentTime > videoProgress.max) {
+            previewVideo.currentTime = videoProgress.max;
+            previewVideo.pause();
+            alert(`End time reached (${secondsToTime(videoProgress.max)})`);
+        }
+    });
+
+    overlayVideo.addEventListener('loadedmetadata', data => {
+        overlayVideo.width = data.path[0].videoWidth;
+        overlayVideo.height = data.path[0].videoHeight;
+        resizeAsset(overlayVideo);
+    });
+
+    overlayVideo.addEventListener('pause', () => {
+        playIcon.classList.remove('fa-pause');
+        playIcon.classList.add('fa-play');
+    });
+
+    overlayVideo.addEventListener('play', () => {
+        playIcon.classList.remove('fa-play');
+        playIcon.classList.add('fa-pause');
+    });
+
+    overlayVideo.addEventListener('canplaythrough', () => {
+        showDOMElement('video_controls', true);
+        showDOMElement('image_controls', false);
+        overlayVideo.play();
+        overlayVideo.showing = true;
+    });
+
+    overlayVideo.addEventListener('ended', () => {
+        if (!currentOverlayAsset.loop && currentOverlayAsset.hideWhenEnded) {
+            overlayVideo.showing = false;
+            setDisappearTimer(1);
+        }
+    });
+
+    overlayVideo.addEventListener('timeupdate', () => {
+        if (overlayVideo.currentTime < videoProgress.min)
+            overlayVideo.currentTime = videoProgress.min;
+
+        if (overlayVideo.currentTime > videoProgress.max) {
+            if (!currentOverlayAsset.loop) {
+                if (currentOverlayAsset.hideWhenEnded) {
+                    overlayVideo.showing = false;
+                    setDisappearTimer(1);
+                } else
+                    overlayVideo.pause();
+            } else
+                overlayVideo.currentTime = videoProgress.min;
+        }
+
+        videoProgress.value = overlayVideo.currentTime;
+        document.getElementById('video_time').innerHTML = secondsToTime(overlayVideo.currentTime);
+    });
 
     document.getElementById('camera-selector').addEventListener('change', startCamera);
     document.getElementById('mic-selector').addEventListener('change', startCamera);
@@ -590,27 +1061,33 @@ function initUIBindings() {
     document.getElementById('btn_save_settings').addEventListener('click', saveSettings);
     document.getElementById('btn_load_settings').addEventListener('click', loadSettings);
     document.getElementById('btn_refresh_devices').addEventListener('click', getDevices);
-    document.getElementById('btn_close_settings').addEventListener('click', () => showPanel('settings-panel', 'hidden'));
-    document.getElementById('btn_open_settings').addEventListener('click', () => showPanel('settings-panel', 'visible'));
-    document.getElementById('btn_start').addEventListener('click', () => startRecording());
+    document.getElementById('btn_close_settings').addEventListener('click', () => showDOMElement('settings-panel', false));
+    document.getElementById('btn_open_settings').addEventListener('click', () => showDOMElement('settings-panel', true));
+    document.getElementById('btn_record').addEventListener('click', startRecording);
 
-    document.getElementById('media-list').addEventListener('dblclick', () => showVideoAssetOptions());
     document.getElementById('btn_asset_new_file').addEventListener('click', newAssetFile);
-    document.getElementById('btn_accept_asset_changes').addEventListener('click', () => acceptAssetChanges());
-    document.getElementById('btn_close_asset_options').addEventListener('click', () => showPanel('videoasset-options-panel', 'hidden'));
+    document.getElementById('btn_accept_asset_changes').addEventListener('click', acceptAssetChanges);
+    document.getElementById('btn_close_asset_options').addEventListener('click', () => showDOMElement('videoasset-options-panel', false));
 
-    document.getElementById('btn_media_new').addEventListener('click', addNewMedia);
-    document.getElementById('btn_media_text').addEventListener('click', addText);
-    document.getElementById('btn_media_delete').addEventListener('click', deleteMedia);
-    document.getElementById('btn_media_up').addEventListener('click', () => moveMedia(-1));
-    document.getElementById('btn_media_down').addEventListener('click', () => moveMedia(1));
-    document.getElementById('btn_media_save').addEventListener('click', () => saveList());
-    document.getElementById('btn_media_load').addEventListener('click', () => loadList());
+    document.getElementById('btn_asset_new').addEventListener('click', addNewAsset);
+    document.getElementById('btn_asset_text').addEventListener('click', addText);
+    document.getElementById('btn_asset_delete').addEventListener('click', deleteAsset);
+    document.getElementById('btn_asset_clone').addEventListener('click', cloneAsset);
+    document.getElementById('btn_asset_up').addEventListener('click', () => moveAsset(-1));
+    document.getElementById('btn_asset_down').addEventListener('click', () => moveAsset(1));
+    document.getElementById('btn_asset_save').addEventListener('click', saveAssetList);
+    document.getElementById('btn_asset_load').addEventListener('click', () => loadAssetList());
+    document.getElementById('btn_asset_settings').addEventListener('click', showAssetOptions);
 
-    document.getElementById('btn_show_media').addEventListener('click', () => showMedia());
-    document.getElementById('btn_show_media_nosound').addEventListener('click', () => alert('not yet!'));
+    document.getElementById('btn_video_play_pause').addEventListener('click', onPlayVideo);
+    document.getElementById('btn_video_stop').addEventListener('click', onStopVideo);
+    document.getElementById('btn_video_eject').addEventListener('click', hideAsset);
+    document.getElementById('video_progress').addEventListener('input', (e) => overlayVideo.currentTime = e.target.value);
+    document.getElementById('video_volume').addEventListener('input', onSetVolume);
+    document.getElementById('btn_video_mute').addEventListener('click', () => onMuteVideo());
+    document.getElementById('btn_image_hide').addEventListener('click', hideAsset);
 
-    // mediaList.addEventListener('change', e => previewMedia(e.target.value));
+    document.getElementById('btn_preview_close').addEventListener('click', closePreview);
 }
 
 window.onload = async () => {
@@ -628,4 +1105,33 @@ window.onload = async () => {
     //  Start camera and microphone
     startCamera();
 
+    electron.store_get('lastAssetList')
+        .then(value => {
+            if (!!value)
+                loadAssetList(value);
+        })
+        .catch(err => alert(err.message));
 }
+
+/*
+
+NOW:
+- Break up JS and SCSS code to multiple imports
+- Recorder function
+- Audio mixing
+- Display asset description
+- Esc closes panels or preview
+
+LATER:
+- Save app settings to JSON
+- Load app settings from JSON
+- Asset list: table, not list
+- Image: fit width, fit height, fit none, drag or wheel
+- Break up HTML and import popups
+- Overlay canvas, enable fading
+- Subtitler
+- Save subtitles with video asset
+- Corner logo
+- Save corner logo with settings
+
+*/
