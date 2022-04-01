@@ -49,5 +49,23 @@ icons:
       - solid
   - circle:
       - solid
-  - sliders-h:
+  - expand-arrows-alt:
+      - solid
+  - image:
+      - solid
+  - film-alt:
+      - solid
+  - hand-paper:
+      - solid
+  - compress-arrows-alt:
+      - solid
+  - arrows-h:
+      - solid
+  - arrows-v:
+      - solid
+  - sliders-v:
+      - solid
+  - wrench:
+      - solid
+  - pencil:
       - solid

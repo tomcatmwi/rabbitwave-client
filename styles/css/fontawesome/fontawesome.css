@@ -176,6 +176,12 @@ readers do not read off random characters that represent icons */
 .fa-arrow-alt-up:before {
   content: "\f357"; }
 
+.fa-arrows-h:before {
+  content: "\f07e"; }
+
+.fa-arrows-v:before {
+  content: "\f07d"; }
+
 .fa-check:before {
   content: "\f00c"; }
 
@@ -191,8 +197,14 @@ readers do not read off random characters that represent icons */
 .fa-cog:before {
   content: "\f013"; }
 
+.fa-compress-arrows-alt:before {
+  content: "\f78c"; }
+
 .fa-eject:before {
   content: "\f052"; }
+
+.fa-expand-arrows-alt:before {
+  content: "\f31e"; }
 
 .fa-eye:before {
   content: "\f06e"; }
@@ -200,8 +212,17 @@ readers do not read off random characters that represent icons */
 .fa-eye-slash:before {
   content: "\f070"; }
 
+.fa-film-alt:before {
+  content: "\f3a0"; }
+
 .fa-folder-open:before {
   content: "\f07c"; }
+
+.fa-hand-paper:before {
+  content: "\f256"; }
+
+.fa-image:before {
+  content: "\f03e"; }
 
 .fa-music:before {
   content: "\f001"; }
@@ -209,20 +230,20 @@ readers do not read off random characters that represent icons */
 .fa-pause:before {
   content: "\f04c"; }
 
+.fa-pencil:before {
+  content: "\f040"; }
+
 .fa-play:before {
   content: "\f04b"; }
 
 .fa-plus:before {
   content: "\f067"; }
 
-.fa-redo:before {
-  content: "\f01e"; }
-
 .fa-save:before {
   content: "\f0c7"; }
 
-.fa-sliders-h:before {
-  content: "\f1de"; }
+.fa-sliders-v:before {
+  content: "\f3f1"; }
 
 .fa-stop:before {
   content: "\f04d"; }
@@ -247,6 +268,9 @@ readers do not read off random characters that represent icons */
 
 .fa-volume-mute:before {
   content: "\f6a9"; }
+
+.fa-wrench:before {
+  content: "\f0ad"; }
 
 .sr-only {
   border: 0;

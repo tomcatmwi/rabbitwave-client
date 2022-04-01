@@ -3,13 +3,21 @@
   <head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <!--
+      <meta http-equiv="Content-Security-Policy" content="default-src 'self'; media-src 'any'">
+    -->    
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
     <link href="./styles/css/main.css" rel="stylesheet" type="text/css">
     <title>Rabbitwave Vlogger</title>
+
   </head>
   <body>
+
+    <!-- Spinner -->
+    <div class="dark-overlay hidden" id="spinner">
+      <i class="fa fa-solid fa-spinner"></i>
+    </div>
 
     <!-- Settings panel -->
     <div class="dark-overlay hidden" id="settings-panel">
@@ -18,22 +26,22 @@
         <!-- Devicces -->
         <div class="selector">
           <div>Video input device:</div>
-            <select id="camera-selector" class="fullwidth"></select>
+            <select id="settings_video_video_input_device" class="fullwidth"></select>
         </div>
 
         <div class="selector">
           <div>Audio input device:</div>
-            <select id="mic-selector" class="fullwidth"></select>
+            <select id="settings_video_audio_input_device" class="fullwidth"></select>
         </div>
 
         <div class="selector">
           <div>Audio output device:</div>
-            <select id="output-selector" class="fullwidth"></select>
+            <select id="settings_video_audio_output_device" class="fullwidth"></select>
         </div>
 
         <div class="selector">
           <div>Video resolution:</div>
-            <select id="resolution-selector" class="fullwidth">
+            <select id="settings_video_resolution" class="fullwidth">
               <optgroup label="4:3">
                 <option value="640x480">640 × 480</option>
                 <option value="800x600">800 × 600</option>
@@ -53,38 +61,34 @@
 
           <div class="selector">
             <div>Video codec:</div>
-              <select id="video-codec-selector">
-                <option value="video/mp4">MP4</option>
-                <option value="video/webm;codecs=vp9">WEBM, WP9</option>
-                <option value="video/webm;codecs=vp8">WEBM, WP8</option>
-                <option selected value="video/webm;codecs=h264">WEBM, H264</option>
-                <option value="video/x-matroska;codecs=avc1">Matroska, AVC1</option>
+              <select id="settings_video_codec">
               </select>
           </div>
           
           <div class="selector">
               <div>Video bitrate, kbps</div>
-              <input type="number" value="5000" id="video-bitrate-selector" min="500" max="50000" />
+              <input type="number" value="5000" id="settings_video_video_bitrate" min="500" max="50000" />
           </div>              
         
           <div class="selector">
               <div>Audio bitrate, kbps</div>
-              <input type="number" value="1400" id="audio-bitrate-selector" min="128" max="9600" />
+              <input type="number" value="1400" id="settings_video_audio_bitrate" min="128" max="9600" />
           </div>
 
         </div>
           
         <div class="selector">
             <div>Default filename (you can change it when saving, if necessary)</div>
-            <input type="text" value="vlog.webp" id="filename-selector" class="fullwidth" />
+            <input type="text" value="vlog" id="settings_video_save_file_name" class="fullwidth" />
         </div>
 
         <div class="selector">
           <div class="row">
-            <input type="button" class="text-button" id="btn_refresh_devices" value="Refresh devices" />
-            <input type="button" class="text-button" id="btn_save_settings" value="Save settings" />
-            <input type="button" class="text-button" id="btn_load_settings" value="Load settings" />
-            <input type="button" class="text-button" id="btn_close_settings" value="Close" />
+            <input type="button" class="text-button" id="btn_settings_refresh_devices" value="Refresh devices" />
+            <input type="button" class="text-button" id="btn_settings_save_settings" value="Save config" />
+            <input type="button" class="text-button" id="btn_settings_load_settings" value="Load config" />
+            <input type="button" class="text-button" id="btn_settings_apply" value="Apply" />
+            <input type="button" class="text-button" id="btn_settings_cancel" value="Cancel" />
           </div>
         </div>        
 
@@ -95,8 +99,10 @@
     <div class="dark-overlay hidden" id="videoasset-options-panel">
       <div class="popup">
 
+        <!-- Hidden, because they should be -->
         <input type="hidden" id="asset_option_id" />
         <input type="hidden" id="asset_option_type" />
+        <input type="hidden" id="asset_option_calculated_data" />
 
         <div class="selector">
             <div>Name of asset:</div>
@@ -126,12 +132,13 @@
           <div class="selector">
               <div>Font:</div>
               <select id="asset_option_font">
-                  <option value="Helvetica">Helvetica</option>
                   <option value="Arial">Arial</option>
-                  <option value="Courier New">Courier New</option>
-                  <option value="Menlo">Menlo</option>
-                  <option value="Garamond">Garamond</option>
                   <option value="Comic Sans">Comic Sans</option>
+                  <option value="Courier New">Courier New</option>
+                  <option value="Garamond">Garamond</option>
+                  <option value="Helvetica">Helvetica</option>
+                  <option value="Menlo">Menlo</option>
+                  <option value="Times New Roman">Times New Roman</option>
               </select>
           </div>
 
@@ -155,22 +162,65 @@
           </div>          
         </div>    
 
-        <div class="selector options_image options_text">
-            <div>Display time, seconds:<br />(0 for no timeout)</div>
-            <input type="number" value="0" min="0" max="120" id="asset_option_display_time" />
-        </div>
+        <div class="selector-row">
+          <div class="selector options_image options_video">
+              <div>Resize:</div>
+              <select id="asset_option_resize">
+                  <option selected value="fit">Fit to video size</option>
+                  <option value="horizontal">Fit to video width</option>
+                  <option value="vertical">Fit to video height</option>
+                  <option value="none">No resize</option>
+              </select>
+          </div>     
 
-        <div class="selector options_video options_audio">
-            <div>Volume:</div>
-            <input type="number" value="50" min="0" max="100" id="asset_option_volume" />
-        </div>          
-        
-        <div class="selector options_image options_video options_text">
-          <div>Position, X, Y (ignored if centered):</div>
-          <input type="number" value="0" min="-5000" max="5000" id="asset_option_x" /> ; <input type="number" value="0" min="-5000" max="5000" id="asset_option_y" />
+          <div class="selector options_video options_image options_text">
+              <div>Center:</div>
+              <select id="asset_option_center">
+                <option selected value="center">Center</option>
+                <option value="none">No centering</option>
+                <option value="horizontal">Horizontally</option>
+                <option value="vertical">Vertically</option>
+              </select>
+          </div>
+
+          <div class="selector options_image options_video options_text">
+            <div>Position, X, Y:</div>
+            <input disabled type="number" value="0" min="-5000" max="5000" id="asset_option_x" /> ; <input disabled type="number" value="0" min="-5000" max="5000" id="asset_option_y" />
+          </div>          
         </div>
         
-        <div class="selector-row options_video options_audio">
+        <div class="selector-row">
+          <div class="selector options_video options_image options_text">
+              <div>Transition:</div>
+              <select disabled id="asset_option_transition">
+                <option selected value="none">No transition</option>
+                <option value="fade">Fade in and out</option>
+                <option value="zoom">Zoom</option>
+                <option value="wipe">Wipe</option>
+                <option value="scrollup">Scroll up</option>
+                <option value="scrolldown">Scroll down</option>
+                <option value="flip">Flip</option>
+              </select>
+          </div>
+
+          <div class="selector options_video options_audio">
+              <div>Volume:</div>
+              <input type="number" value="50" min="0" max="100" id="asset_option_volume" />
+          </div>          
+
+          <div class="selector options_image options_text">
+              <div><input type="checkbox" id="asset_option_display_timer_active" /><label for="asset_option_display_timer_active">Hide after</label></div>
+              <input disabled type="number" value="0" min="0" max="120" id="asset_option_display_time" /> sec
+          </div>          
+
+          <div class="selector options_video">
+              <div>Hide delay:</div>
+              <input type="number" value="1" min="0" max="120" id="asset_option_hide_delay" /> sec
+          </div>
+
+        </div>        
+        
+        <div class="options_video options_audio selector-row">
           <div class="selector">
             <div>Start time:</div>
             <input type="number" value="0" min="0" max="23" id="asset_option_start_hour" /> :
@@ -179,7 +229,7 @@
           </div>
 
           <div class="selector">
-            <div>End time (0 means to the end):</div>
+            <div><input type="checkbox" id="asset_option_ignore_end" checked /><label for="asset_option_ignore_end">End time</label></div>
             <input type="number" value="0" min="0" max="23" id="asset_option_end_hour" /> :
             <input type="number" value="0" min="0" max="59" id="asset_option_end_minute" /> :
             <input type="number" value="0" min="0" max="59" id="asset_option_end_second" />
@@ -189,15 +239,9 @@
         <!-- Checkboxes -->
           <div class="checkbox-selector">
             <div class="options_text"><input type="checkbox" id="asset_option_outline" checked /><label for="asset_option_outline">Black outline</label></div>
-            <div class="options_image options_video"><input type="checkbox" id="asset_option_resize_big" /><label for="asset_option_resize_big">Resize if too big</label></div>
-            <div class="options_image options_video"><input type="checkbox" id="asset_option_resize_small" /><label for="asset_option_resize_small">Resize if too small</label></div>
-            <div class="options_image options_video"><input type="checkbox" id="asset_option_center" /><label for="asset_option_center">Center</label></div>
-            <div class="options_text"><input type="checkbox" checked id="asset_option_horizontal_center" /><label for="asset_option_horizontal_center">Horizontal center</label></div>
-            <div class="options_text"><input type="checkbox" id="asset_option_vertical_center" /><label for="asset_option_vertical_center">Vertical center</label></div>
             <div class="options_image options_video"><input type="checkbox" id="asset_option_black" /><label for="asset_option_black">Black background</label></div>
-            <div class="options_video"><input type="checkbox" id="asset_option_fade" /><label for="asset_option_fade">Fade in and out</label></div>
             <div class="options_video"><input type="checkbox" id="asset_option_mute" /><label for="asset_option_mute">Mute</label></div>
-            <div class="options_video"><input type="checkbox" id="asset_option_hide_when_ended" /><label for="asset_option_hide_when_ended">Hide when ended</label></div>
+            <div class="options_video"><input type="checkbox" id="asset_option_hide_when_ends" /><label for="asset_option_hide_when_ends">Hide when ended</label></div>
             <div class="options_audio options_video"><input type="checkbox" id="asset_option_loop" /><label for="asset_option_loop">Loop</label></div>
             <div class="options_audio options_video"><input type="checkbox" id="asset_option_mic_off" /><label for="asset_option_mic_off">Microphone off</label></div>
         </div>   
@@ -209,7 +253,7 @@
           </div>
         </div>        
 
-      </div>
+      </div>      
     </div>
 
     <div class="mainwindow">
@@ -217,12 +261,28 @@
       <!-- Camera preview -->
       <div class="left-side">
 
-        <div class="camera-image">
-          <canvas id="video-canvas"></canvas>
-          <div id="btn_preview_close" class="hidden"><i class="fa fa-solid fa-times"></i></div>
-          <img id="preview-image" class="preview hidden" />
-          <video id="preview-video" class="preview hidden" controls></video>
-          <audio id="preview-audio" class="preview hidden" controls></audio>
+        <!--  Drawing tool -->
+        <div id="drawing_controls">
+          <div class="drawing-color-button hidden" id="btn_image_color_black"></div>
+          <div class="drawing-color-button hidden" id="btn_image_color_white"></div>
+          <div class="drawing-color-button hidden" id="btn_image_color_red"></div>
+          <div class="drawing-color-button hidden" id="btn_image_color_green"></div>
+          <div class="drawing-color-button hidden" id="btn_image_color_blue"></div>
+          <div class="drawing-color-button hidden" id="btn_image_color_yellow"></div>
+          <div class="drawing-color-button hidden" id="btn_image_color_yellowgreen"></div>
+          <div class="drawing-color-button hidden" id="btn_image_draw_clear" alt="Clear drawing"><i class="fa fa-solid fa-times"></i></div>
+          <div class="drawing-color-button" id="btn_image_draw_pencil" alt="Open drawing tools"><i class="fa fa-solid fa-pencil"></i></div>
+        </div>        
+
+        <div id="monitor-wrapper">
+          <video autoplay muted id="video-monitor"></video>
+        </div>
+
+        <div id="preview" class="hidden">
+          <div id="preview-close"><i class="fa fa-solid fa-times"></i></div>
+          <img id="preview-image" class="hidden" />
+          <video id="preview-video" class="hidden" controls></video>
+          <audio id="preview-audio" class="hidden" controls></audio>
         </div>
 
       </div>
@@ -246,30 +306,42 @@
           </div>
         </div>
 
+        <!-- Asset controls -->
         <div class="asset-list-buttons">
 
           <!-- Video and audio player controls -->
           <div id="video_controls" class="hidden">
-            <div class="video_controls_row">
-              <div class="video_controls_btngroup">
+            <div class="overlay_controls_row">
+              <div class="overlay_controls_btngroup">
                   <button id="btn_video_play_pause"><i id="icon_video_play_pause" class="fa fa-solid fa-play"></i></button>
                   <button id="btn_video_stop"><i class="fa fa-solid fa-stop"></i></button>
                   <button id="btn_video_eject"><i class="fa fa-solid fa-eject"></i></button>
               </div>
-              <div class="video_controls_btngroup">
+              <div class="overlay_controls_btngroup">
                   <button id="btn_video_mute"><i id="video_mute_icon" class="fa fa-solid fa-volume"></i></button>
                   <input type="range" min="1" max="100" value="50" id="video_volume">
               </div>
             </div>
             
-            <div class="video_controls_row">
+            <div class="overlay_controls_row">
               <input type="range" min="0" max="100" value="0" id="video_progress">
               <div id="video_time">00:00:00</div>
             </div>
           </div>
 
           <div id="image_controls" class="hidden">
-            <button id="btn_image_hide" alt="Hide overlays"><i class="fa fa-solid fa-eye-slash"></i></button>
+            <div class="overlay_controls_btngroup">
+              <button id="btn_image_fit_y" alt="Fit to video height"><i class="fa fa-solid fa-arrows-h"></i></button>
+              <button id="btn_image_fit_x" alt="Fit to video width"><i class="fa fa-solid fa-arrows-v"></i></button>
+              <button id="btn_image_nofit" alt="Original size"><i class="fa fa-solid fa-expand-arrows-alt"></i></button>
+              <button id="btn_image_hide" alt="Hide image"><i class="fa fa-solid fa-eye-slash"></i></button>
+            </div>
+          </div>
+
+          <div id="text_controls" class="hidden">
+            <div class="overlay_controls_btngroup">
+              <button id="btn_text_hide" alt="Hide text"><i class="fa fa-solid fa-eye-slash"></i></button>
+            </div>
           </div>
 
           <div id="asset_controls">
@@ -277,15 +349,16 @@
             <button id="btn_asset_text" alt="Add text"><i class="fa fa-solid fa-text"></i></button>
             <button id="btn_asset_clone" alt="Clone asset"><i class="fa fa-solid fa-clone"></i></button>
             <button id="btn_asset_delete" alt="Remove asset"><i class="fa fa-solid fa-trash-alt"></i></button>
-            <button id="btn_asset_settings" alt="Asset settings"><i class="fa fa-solid fa-sliders-h"></i></button>
+            <button id="btn_asset_settings" alt="Asset settings"><i class="fa fa-solid fa-sliders-v"></i></button>
           </div>
 
           <div id="record_controls" class="recording">
             <div>
               <div id="record_time" alt="Recording length">00:00:00</div>
               <div id="record_resolution" alt="Resolution, video and audio bitrate">No resolution data</div>
+              <div id="record_size" alt="Recorded file size">0 B</div>
             </div>
-            <button id="btn_record" alt="Record" class="recording"><i class="fa fa-solid fa-circle"></i></button>
+            <button id="btn_record" alt="Record"><i class="fa fa-solid fa-circle"></i></button>
           </div>
 
         </div>
@@ -296,9 +369,41 @@
 
     </div>
 
-    <script type="text/javascript" src="./index.js"></script>
+    <!-- Electron core -->
     <script type="text/javascript" src="./renderer.js"></script>
-    <script src="./scripts/RecordRTC.js"></script>
+
+    <!-- Global variables -->
+    <script type="text/javascript" src="./scripts/globals.js"></script>
+
+    <!-- General utility functions -->
+    <script type="text/javascript" src="./scripts/utils.js"></script>
+
+    <!-- Initialization routine, defaults and DOM events -->
+    <script type="text/javascript" src="./scripts/init.js"></script>
+
+    <!-- Functions related to application settings -->
+    <script type="text/javascript" src="./scripts/settings.js"></script>
+
+    <!-- Functions related to the asset list -->
+    <script type="text/javascript" src="./scripts/assetList.js"></script>
+
+    <!-- Functions related to superimposing overlays -->
+    <script type="text/javascript" src="./scripts/overlay.js"></script>
+
+    <!-- Event functions of video buttons (play, pause, etc) -->
+    <script type="text/javascript" src="./scripts/videoControls.js"></script>
+
+    <!-- Drawing toolkit -->
+    <script type="text/javascript" src="./scripts/drawing.js"></script>
+
+    <!-- WebRTC functions -->
+    <script type="text/javascript" src="./scripts/webRTC.js"></script>
+    
+    <!-- MediaSwitcher -->
+    <script type="text/javascript" src="./scripts/dependencies/MediaSwitcher.class.js"></script>
+
+    <!-- Launcher -->
+    <script defer type="text/javascript" src="./index.js"></script>
 
   </body>
 </html>

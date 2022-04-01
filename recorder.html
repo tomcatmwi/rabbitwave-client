@@ -35,14 +35,14 @@ function stopRecordingCallback() {
     video.src = video.srcObject = null;
     video.muted = false;
     video.volume = 1;
-    video.src = URL.createObjectURL(recorder.getBlob());
+    video.src = URL.createObjectURL(mainRecorder.getBlob());
     
-    recorder.camera.stop();
-    recorder.destroy();
-    recorder = null;
+    mainRecorder.camera.stop();
+    mainRecorder.destroy();
+    mainRecorder = null;
 }
 
-var recorder; // globally accessible
+var mainRecorder; // globally accessible
 
 document.getElementById('btn-start-recording').onclick = function() {
     this.disabled = true;
@@ -51,14 +51,14 @@ document.getElementById('btn-start-recording').onclick = function() {
         video.volume = 0;
         video.srcObject = stream;
 
-        recorder = RecordRTC(stream, {
+        mainRecorder = RecordRTC(stream, {
             type: 'video'
         });
 
-        recorder.startRecording();
+        mainRecorder.startRecording();
 
         // release camera on stopRecording
-        recorder.camera = stream;
+        mainRecorder.camera = stream;
 
         document.getElementById('btn-stop-recording').disabled = false;
     });
@@ -66,7 +66,7 @@ document.getElementById('btn-start-recording').onclick = function() {
 
 document.getElementById('btn-stop-recording').onclick = function() {
     this.disabled = true;
-    recorder.stopRecording(stopRecordingCallback);
+    mainRecorder.stopRecording(stopRecordingCallback);
 };
 </script>
 
