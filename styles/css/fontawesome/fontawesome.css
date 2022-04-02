@@ -176,6 +176,9 @@ readers do not read off random characters that represent icons */
 .fa-arrow-alt-up:before {
   content: "\f357"; }
 
+.fa-arrow-right:before {
+  content: "\f061"; }
+
 .fa-arrows-h:before {
   content: "\f07e"; }
 
@@ -217,6 +220,9 @@ readers do not read off random characters that represent icons */
 
 .fa-folder-open:before {
   content: "\f07c"; }
+
+.fa-grip-lines:before {
+  content: "\f7a4"; }
 
 .fa-hand-paper:before {
   content: "\f256"; }

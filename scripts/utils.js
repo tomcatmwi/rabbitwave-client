@@ -30,10 +30,15 @@ function showDOMElement(id, show) {
         id = [id];
 
     id.forEach(id => {
+        const element = document.getElementById(id);
+        if (!element) {
+            console.error(`Element not found: ${id}`);
+            return;
+        }
         if (show)
-            document.getElementById(id).classList.remove('hidden')
+            element.classList.remove('hidden')
         else
-            document.getElementById(id).classList.add('hidden');
+            element.classList.add('hidden');
     });
 }
 

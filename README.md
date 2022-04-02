@@ -19,8 +19,9 @@ I'll explain the name later. Proper docs coming up later. This was made for my o
 # Known bugs
 
 - Add friendly error message for when an asset list can't be loaded
-- Stop button should stop the video, not rewind
-- Video superimposed without recording. Start recording. Start video. Stop video. Error.
+- Stop button is buggy.
+- There's no exit confirmation now.
+- Superimpose a video without recording and pause it. Start recording. Start video. Stop video. Error, and the audio track doesn't switch.
 
 # Future plans
 
@@ -31,9 +32,10 @@ I'll explain the name later. Proper docs coming up later. This was made for my o
 - Transition effects such as fade, etc
 - Simple image animations
 - Optional pointer to explain and mark images
-- Subtitles and subtitle editor for videos
+- Subtitles and subtitle editor
 - Intro animation and superimposed watermarks (corner logo)
-- The big future plan: allow streaming, and develop a conference server to record vlogs with remote guests.
+- Direct streaming and automatic uploading
+- Allow remote guests
 
 ## Code quality
 

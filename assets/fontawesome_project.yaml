@@ -69,3 +69,7 @@ icons:
       - solid
   - pencil:
       - solid
+  - arrow-right:
+      - solid
+  - grip-lines:
+      - solid

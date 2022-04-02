@@ -3,6 +3,7 @@ styles/css
 .git
 .github
 .gitignore
+.electron-ignore
 package-lock.json
 *.webm
 *.mp4

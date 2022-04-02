@@ -98,12 +98,13 @@ function newAssetFile() {
 //  Called when an asset was changed and OK clicked
 function acceptAssetChanges() {
     moveValues(currentSelectedAsset, 'asset_option_', 'json');
+    currentSelectedAsset.calculatedData = null;
     rebuildAssetList();
     showDOMElement('videoasset-options-panel', false);
 }
 
 //  Opens the Asset Options panel for the currently selected asset
-function showOverlayOptions() {
+function showAssetOptions() {
 
     if (!currentSelectedAsset) return;
 
@@ -298,6 +299,8 @@ function setCurrentSelectedAsset(showPreview = false) {
     const asset = videoAssets.find(x => x.id === assetList.options[assetList.selectedIndex].value) || undefined;
     if (asset !== currentSelectedAsset)
         currentSelectedAsset = asset;
+
+    document.getElementById('asset_notes').value = currentSelectedAsset.description;
 
     closePreview();
     if (!showPreview) return;

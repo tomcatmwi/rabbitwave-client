@@ -64,16 +64,3 @@ function switchAudioTrack(to = 'mic') {
     }
     mediaSwitcher.changeTrack(audioTracks[0]);
 }
-
-function setMuteButton() {
-
-    const audioStreams = overlayVideo.captureStream().getAudioTracks();
-    if (!audioStreams.length || overlayVideo.muted) {
-        muteButton.classList.remove('fa-volume');
-        muteButton.classList.add('fa-volume-mute');
-    } else {
-        muteButton.classList.add('fa-volume');
-        muteButton.classList.remove('fa-volume-mute');
-    }
-
-}

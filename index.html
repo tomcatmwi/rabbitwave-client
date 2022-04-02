@@ -122,7 +122,7 @@
             <textarea id="asset_option_text" class="fullwidth"></textarea>
         </div>
 
-        <div class="selector options_image options_video options_audio">
+        <div class="selector options_text options_image options_video options_audio">
             <div>Description, notes:</div>
             <textarea id="asset_option_description" class="fullwidth"></textarea>
         </div>
@@ -256,34 +256,82 @@
       </div>      
     </div>
 
-    <div class="mainwindow">
+    <!-- Text drawing dialog -->
+    <div class="dark-overlay hidden" id="drawing-text-panel">
+      <div class="popup">
 
-      <!-- Camera preview -->
-      <div class="left-side">
+        <div class="selector">
+            <div>Text:</div>
+            <input type="text" value="" id="drawing-text-text" class="fullwidth" />
+        </div>
 
-        <!--  Drawing tool -->
-        <div id="drawing_controls">
-          <div class="drawing-color-button hidden" id="btn_image_color_black"></div>
-          <div class="drawing-color-button hidden" id="btn_image_color_white"></div>
-          <div class="drawing-color-button hidden" id="btn_image_color_red"></div>
-          <div class="drawing-color-button hidden" id="btn_image_color_green"></div>
-          <div class="drawing-color-button hidden" id="btn_image_color_blue"></div>
-          <div class="drawing-color-button hidden" id="btn_image_color_yellow"></div>
-          <div class="drawing-color-button hidden" id="btn_image_color_yellowgreen"></div>
-          <div class="drawing-color-button hidden" id="btn_image_draw_clear" alt="Clear drawing"><i class="fa fa-solid fa-times"></i></div>
-          <div class="drawing-color-button" id="btn_image_draw_pencil" alt="Open drawing tools"><i class="fa fa-solid fa-pencil"></i></div>
+        <div class="selector-row">
+
+          <div class="selector">
+              <div>Font:</div>
+              <select id="drawing-text-font">
+                  <option value="Arial">Arial</option>
+                  <option value="Comic Sans">Comic Sans</option>
+                  <option value="Courier New">Courier New</option>
+                  <option value="Garamond">Garamond</option>
+                  <option selected value="Helvetica">Helvetica</option>
+                  <option value="Menlo">Menlo</option>
+                  <option value="Times New Roman">Times New Roman</option>
+              </select>
+          </div>
+
+          <div class="selector">
+              <div>Font size:</div>
+              <input type="number" value="25" min="6" max="96" id="drawing-text-font-size" />
+          </div>
+
+        </div>    
+
+        <div class="selector">
+          <div class="row">
+            <input type="button" class="text-button" id="btn_accept_drawing_text" value="Accept" />
+            <input type="button" class="text-button" id="btn_close_drawing_text" value="Cancel" />
+          </div>
         </div>        
 
+      </div>      
+    </div>    
+
+    <!--  Drawing tool -->
+    <div id="drawing_controls">
+      <div class="drawing-color-button control-button hidden" id="btn_image_draw_text" alt="Add text"><i class="fa fa-solid fa-text"></i></div>
+      <div class="drawing-color-button control-button hidden" id="btn_image_draw_arrow" alt="Draw arrow"><i class="fa fa-solid fa-arrow-right"></i></div>
+      <div class="drawing-color-button hidden" id="btn_image_color_black"></div>
+      <div class="drawing-color-button hidden" id="btn_image_color_white"></div>
+      <div class="drawing-color-button hidden" id="btn_image_color_red"></div>
+      <div class="drawing-color-button hidden" id="btn_image_color_green"></div>
+      <div class="drawing-color-button hidden" id="btn_image_color_blue"></div>
+      <div class="drawing-color-button hidden" id="btn_image_color_yellow"></div>
+      <div class="drawing-color-button hidden" id="btn_image_color_yellowgreen"></div>
+      <div class="drawing-color-button control-button hidden" id="btn_image_draw_clear" alt="Clear drawing"><i class="fa fa-solid fa-times"></i></div>
+      <div class="drawing-color-button control-button" id="btn_image_draw_pencil" alt="Open drawing tools"><i class="fa fa-solid fa-pencil"></i></div>
+    </div>
+    
+    <!-- Preview -->
+    <div id="preview" class="hidden">
+      <div id="preview-close"><i class="fa fa-solid fa-times"></i></div>
+      <img id="preview-image" class="hidden" />
+      <video id="preview-video" class="hidden" controls></video>
+      <audio id="preview-audio" class="hidden" controls></audio>
+    </div>    
+
+    <!-- Main window -->
+    <div class="mainwindow">
+
+      <div class="left-side">
+
+        <!-- Stream preview -->
         <div id="monitor-wrapper">
           <video autoplay muted id="video-monitor"></video>
         </div>
 
-        <div id="preview" class="hidden">
-          <div id="preview-close"><i class="fa fa-solid fa-times"></i></div>
-          <img id="preview-image" class="hidden" />
-          <video id="preview-video" class="hidden" controls></video>
-          <audio id="preview-audio" class="hidden" controls></audio>
-        </div>
+        <!-- Notes for the video -->
+        <textarea id="notes" placeholder="Write notes here"></textarea>
 
       </div>
 
@@ -296,10 +344,15 @@
           <div class="asset-list-move-buttons">
             <button id="btn_asset_up" alt="Move asset(s) up"><i class="fa fa-solid fa-arrow-alt-up"></i></button>
 
-            <div>
+            <div id="asset-button-container">
+              <button id="btn_asset_new" alt="Add new asset"><i class="fa fa-solid fa-plus"></i></button>
+              <button id="btn_asset_text" alt="Add text"><i class="fa fa-solid fa-text"></i></button>
+              <button id="btn_asset_clone" alt="Clone asset"><i class="fa fa-solid fa-clone"></i></button>
+              <button id="btn_asset_delete" alt="Remove asset"><i class="fa fa-solid fa-trash-alt"></i></button>
+              <button id="btn_asset_settings" alt="Asset settings"><i class="fa fa-solid fa-sliders-v"></i></button>
               <button id="btn_asset_load" alt="Load saved asset list"><i class="fa fa-solid fa-folder-open"></i></button>
               <button id="btn_asset_save" alt="Save asset list"><i class="fa fa-solid fa-save"></i></button>
-              <button id="btn_open_settings" alt="App settings"><i class="fa fa-solid fa-cog"></i></button>            
+
             </div>
 
             <button id="btn_asset_down" alt="Move asset(s) down"><i class="fa fa-solid fa-arrow-alt-down"></i></button>
@@ -345,11 +398,7 @@
           </div>
 
           <div id="asset_controls">
-            <button id="btn_asset_new" alt="Add new asset"><i class="fa fa-solid fa-plus"></i></button>
-            <button id="btn_asset_text" alt="Add text"><i class="fa fa-solid fa-text"></i></button>
-            <button id="btn_asset_clone" alt="Clone asset"><i class="fa fa-solid fa-clone"></i></button>
-            <button id="btn_asset_delete" alt="Remove asset"><i class="fa fa-solid fa-trash-alt"></i></button>
-            <button id="btn_asset_settings" alt="Asset settings"><i class="fa fa-solid fa-sliders-v"></i></button>
+              <button id="btn_open_settings" alt="App settings"><i class="fa fa-solid fa-cog"></i></button>
           </div>
 
           <div id="record_controls" class="recording">
@@ -363,7 +412,8 @@
 
         </div>
 
-        <textarea id="notes" placeholder="Write notes here"></textarea>
+        <!-- Selected asset notes -->
+        <textarea id="asset_notes" placeholder="Asset notes"></textarea>
 
       </div>
 
@@ -373,13 +423,15 @@
     <script type="text/javascript" src="./renderer.js"></script>
 
     <!-- Global variables -->
-    <script type="text/javascript" src="./scripts/globals.js"></script>
+    <script type="text/javascript" src="./scripts/init_globals.js"></script>
 
     <!-- General utility functions -->
     <script type="text/javascript" src="./scripts/utils.js"></script>
 
     <!-- Initialization routine, defaults and DOM events -->
-    <script type="text/javascript" src="./scripts/init.js"></script>
+    <script type="text/javascript" src="./scripts/init_ui.js"></script>
+    <script type="text/javascript" src="./scripts/init_previews.js"></script>
+    <script type="text/javascript" src="./scripts/init_overlays.js"></script>
 
     <!-- Functions related to application settings -->
     <script type="text/javascript" src="./scripts/settings.js"></script>

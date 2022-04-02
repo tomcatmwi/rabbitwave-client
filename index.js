@@ -8,8 +8,9 @@ window.onload = async () => {
         .catch(err => alert(err));
     if (!devices) return;
 
-    //  Initialize preview and overlay videos
-    initVideoElements();
+    //  Initialize preview and overlay elements
+    initPreviews();
+    initOverlays();
 
     //  Load last saved settings
     //  It will start the camera automatically
@@ -33,14 +34,3 @@ window.onload = async () => {
         })
         .catch(err => alert(err.message));
 }
-
-/*
-
-NOW:
-- Audio overlays
-- Preview hide button
-- Display asset descriptions somewhere
-- Esc should close panels or preview
-- Calculate and store text size when asset is created/modified
-
-*/

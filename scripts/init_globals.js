@@ -174,6 +174,12 @@ let drawing = {
     x: 0,
     y: 0,
     prevX: 0,
-    prevY: 0
+    prevY: 0,
+    text: null,
+    arrow: {
+        active: false,
+        x: -1,
+        y: -1
+    }
 };
 drawing.ctx = drawing.canvas.getContext('2d')

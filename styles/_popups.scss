@@ -71,5 +71,10 @@
         flex-wrap: wrap;
         row-gap: .5em;
     }
+
+    #asset_option_description {
+        resize: none;
+        height: 6em;
+    }
     
 }

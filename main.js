@@ -81,7 +81,7 @@ function createWindow() {
   //  Clear browser cache
   mainWindow.webContents.session.clearStorageData()
 
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
   mainWindow.on('close', function (e) {
     var choice = dialog.showMessageBox(this,

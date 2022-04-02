@@ -96,64 +96,72 @@ function showText() {
 
     //  Find width and height of area to copy text --------------------------------------------------------------
 
-    //  Get image information
-    imgData = ctx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+    if (!currentSelectedAsset.calculatedData) {
 
-    //  We only need every 4th value (alpha value for each pixel)
-    let counter = 0;
-    const pixels = Array.from(imgData.data).filter(() => {
-        if (counter === 3) {
-            counter = 0;
-            return true;
-        }
-        counter++;
-        return false;
-    });
+        //  Get image information
+        imgData = ctx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
 
-    //  Find top and bottom boundaries
-    let top = null;
-    let bottom = null;
-    let left = tempCanvas.width;
-    let right = 0;
-
-    for (let y = 0; y < pixels.length - tempCanvas.width; y += tempCanvas.width) {
-
-        const row = pixels.slice(y, y + tempCanvas.width);
-
-        if (row.some(pixel => pixel > 0)) {
-
-            //  If we have no top yet, then this is it
-            if (top === null)
-                // top = y == 0 ? 0 : Math.round(y / tempCanvas.width);
-                top = 0;
-
-            //  This is the bottommost row we found so far
-            bottom = Math.ceil(y / tempCanvas.width);
-
-            //  Find leftmost and rightmost pixels
-            let leftmost = null;
-            let rightmost = null;
-            for (let x = 0; x < row.length; x++) {
-                if (!!row[x]) {
-                    if (leftmost === null)
-                        leftmost = x;
-                    rightmost = x;
-                }
+        //  We only need every 4th value (alpha value for each pixel)
+        let counter = 0;
+        const pixels = Array.from(imgData.data).filter(() => {
+            if (counter === 3) {
+                counter = 0;
+                return true;
             }
+            counter++;
+            return false;
+        });
 
-            if (leftmost < left) left = leftmost;
-            if (rightmost > right) right = rightmost;
+        //  Find top and bottom boundaries
+        let top = null;
+        let bottom = null;
+        let left = tempCanvas.width;
+        let right = 0;
+
+        for (let y = 0; y < pixels.length - tempCanvas.width; y += tempCanvas.width) {
+
+            const row = pixels.slice(y, y + tempCanvas.width);
+
+            if (row.some(pixel => pixel > 0)) {
+
+                //  If we have no top yet, then this is it
+                if (top === null)
+                    // top = y == 0 ? 0 : Math.round(y / tempCanvas.width);
+                    top = 0;
+
+                //  This is the bottommost row we found so far
+                bottom = Math.ceil(y / tempCanvas.width);
+
+                //  Find leftmost and rightmost pixels
+                let leftmost = null;
+                let rightmost = null;
+                for (let x = 0; x < row.length; x++) {
+                    if (!!row[x]) {
+                        if (leftmost === null)
+                            leftmost = x;
+                        rightmost = x;
+                    }
+                }
+
+                if (leftmost < left) left = leftmost;
+                if (rightmost > right) right = rightmost;
+            }
         }
-    }
 
-    currentResizeData = {
-        x: currentSelectedAsset.x,
-        y: currentSelectedAsset.y,
-        width: right - left + 1,
-        height: bottom - top + 1,
-        horizontalCenter: currentSelectedAsset.center === 'center' || currentSelectedAsset.center === 'horizontal',
-        verticalCenter: currentSelectedAsset.center === 'center' || currentSelectedAsset.center === 'vertical'
+        currentResizeData = {
+            x: currentSelectedAsset.x,
+            y: currentSelectedAsset.y,
+            width: right - left + 1,
+            height: bottom - top + 1,
+            horizontalCenter: currentSelectedAsset.center === 'center' || currentSelectedAsset.center === 'horizontal',
+            verticalCenter: currentSelectedAsset.center === 'center' || currentSelectedAsset.center === 'vertical'
+        }
+
+        //  Save resize data into asset, so we won't have to calculate next time
+        currentSelectedAsset.calculatedData = currentResizeData;
     }
+    else
+        currentResizeData = currentSelectedAsset.calculatedData;
 
     assetList.disabled = false;
     showDOMElement(['video_controls', 'image_controls'], false);
@@ -169,6 +177,10 @@ function showVideo() {
     //  Load video into overlayVideo element, and set properties
     if (!overlayVideo.paused)
         overlayVideo.pause();
+
+    if (!overlayAudio.paused)
+        overlayAudio.pause();
+
     overlayVideo.loop = currentSelectedAsset.loop;
     overlayVideo.autoplay = false;
     overlayVideo.volume = currentSelectedAsset.volume / 100;
@@ -176,8 +188,20 @@ function showVideo() {
     overlayVideo.src = currentSelectedAsset.filename;
 }
 
+//  Loads an audio and prepares it for playing
 function showAudio() {
     closePreview();
+
+    if (!overlayVideo.paused)
+        overlayVideo.pause();
+
+    if (!overlayAudio.paused)
+        overlayAudio.pause();
+
+    overlayAudio.loop = currentSelectedAsset.loop;
+    overlayAudio.autoplay = false;
+    overlayAudio.volume = currentSelectedAsset.volume / 100;
+    overlayAudio.src = currentSelectedAsset.filename;
 }
 
 //  Hides all overlays

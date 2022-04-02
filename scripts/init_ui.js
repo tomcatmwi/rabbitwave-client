@@ -1,119 +1,3 @@
-//  Attach events to all video elements
-function initVideoElements() {
-
-    //  Set up events of the preview video element -----------------------------------------------------------------------------
-
-    previewVideo.addEventListener('volumechange', e => {
-        currentSelectedAsset.volume = e.target.volume * 100;
-        currentSelectedAsset.mute = e.target.muted;
-    });
-
-    previewAudio.addEventListener('volumechange', e => {
-        currentSelectedAsset.volume = e.target.volume * 100;
-        currentSelectedAsset.mute = e.target.muted;
-    });
-
-    previewVideo.addEventListener('timeupdate', () => {
-        if (previewVideo.readyState !== 4)
-            return;
-
-        //  Do not let the user seek outside the time boundaries set for the asset
-        if (previewVideo.currentTime < videoProgress.min) {
-            previewVideo.currentTime = videoProgress.min;
-            previewVideo.pause();
-            alert(`Start time reached (${secondsToTime(videoProgress.min)})`);
-        }
-        if (previewVideo.currentTime > videoProgress.max) {
-            previewVideo.currentTime = videoProgress.max;
-            previewVideo.pause();
-            alert(`End time reached (${secondsToTime(videoProgress.max)})`);
-            previewVideo.currentTime = videoProgress.min;
-        }
-    });
-
-    //  Set up events of the overlay video element -----------------------------------------------------------------------------
-
-    overlayVideo.addEventListener('loadedmetadata', data => {
-        overlayVideo.width = data.path[0].videoWidth;
-        overlayVideo.height = data.path[0].videoHeight;
-        resizeAsset(overlayVideo);
-
-        //  Set up video slider
-        const startTime = timeToSeconds(currentSelectedAsset.startHour, currentSelectedAsset.startMinute, currentSelectedAsset.startSecond);
-        let endTime = timeToSeconds(currentSelectedAsset.endHour, currentSelectedAsset.endMinute, currentSelectedAsset.endSecond);
-
-        if (endTime === 0 || endTime < startTime || currentSelectedAsset.ignoreEnd)
-            endTime = data.path[0].duration;
-
-        videoProgress.min = startTime;
-        videoProgress.max = endTime;
-        videoProgress.step = (endTime - startTime) / 500;
-        videoProgress.value = startTime;
-    });
-
-    //  On pause: turn off video audio, and switch to microphone audio
-    overlayVideo.addEventListener('pause', () => {
-        setTimeout(() => switchAudioTrack('mic'), 10);
-        playIcon.classList.remove('fa-pause');
-        playIcon.classList.add('fa-play');
-    });
-
-    //  On play: turn off mic, and switch to video audio
-    overlayVideo.addEventListener('play', () => {
-        setTimeout(() => switchAudioTrack('video'), 10);
-        playIcon.classList.remove('fa-play');
-        playIcon.classList.add('fa-pause');
-        setMuteButton();
-    });
-
-    //  When the entire video loaded, show controls
-    overlayVideo.addEventListener('canplaythrough', async () => {
-        showDOMElement('video_controls', true);
-        showDOMElement(['image_controls', 'text_controls'], false);
-        setMuteButton();
-        overlayVideo.showing = true;
-        overlayVideo.play();
-    });
-
-    //  When ended, turn off overlay
-    overlayVideo.addEventListener('ended', () => {
-        if (!currentOverlayAsset.loop && currentOverlayAsset.hideWhenEnds)
-            setDisappearTimer(currentOverlayAsset.hideDelay);
-    });
-
-    //  Timer ticker
-    overlayVideo.addEventListener('timeupdate', e => {
-
-        //  Don't allow a position lower than the starting point
-        if (overlayVideo.currentTime < videoProgress.min)
-            overlayVideo.currentTime = videoProgress.min;
-
-        //  Don't allow a position higher than the starting point
-        if (!overlayVideo.ignoreEnd && overlayVideo.currentTime > videoProgress.max) {
-
-            if (!!currentOverlayAsset && !currentOverlayAsset.loop) {
-
-                if (currentOverlayAsset.hideWhenEnds) {
-                    overlayVideo.showing = false;
-                    setDisappearTimer(currentOverlayAsset.hideDelay);
-                } else
-                    if (!overlayVideo.paused)
-                        overlayVideo.pause();
-            } else
-                overlayVideo.currentTime = videoProgress.min;
-        }
-
-        videoProgress.value = overlayVideo.currentTime;
-        document.getElementById('video_time').innerHTML = secondsToTime(overlayVideo.currentTime);
-    });
-
-    //  Seeking disrupts audio, must re-assign audio track
-    overlayVideo.addEventListener('seeked', e => {
-        setTimeout(() => switchAudioTrack('video'), 10);
-    });
-
-}
-
 //  Set up UI bindings
 function initUIBindings() {
     assetList = document.getElementById('asset-list');
@@ -138,9 +22,14 @@ function initUIBindings() {
     videoMonitor.addEventListener('wheel', overlayWheel);
     videoMonitor.addEventListener('mousedown', drawStart);
     videoMonitor.addEventListener('mousemove', draw);
+    videoMonitor.addEventListener('contextmenu', drawEndText);
+
+    document.addEventListener('keydown', e => keyDown(e))
 
     //  Drawing on the canvas
     document.getElementById('btn_image_draw_pencil').addEventListener('click', toggleDrawingTools);
+    document.getElementById('btn_image_draw_text').addEventListener('click', () => drawText(false));
+    document.getElementById('btn_image_draw_arrow').addEventListener('click', drawArrow);
     document.getElementById('btn_image_draw_clear').addEventListener('click', clearDrawing);
     document.getElementById('btn_image_draw_clear').addEventListener('dblclick', toggleDrawingTools);
     document.getElementById('btn_image_color_black').addEventListener('click', () => initDrawing('black'));
@@ -150,6 +39,10 @@ function initUIBindings() {
     document.getElementById('btn_image_color_blue').addEventListener('click', () => initDrawing('blue'));
     document.getElementById('btn_image_color_yellow').addEventListener('click', () => initDrawing('yellow'));
     document.getElementById('btn_image_color_yellowgreen').addEventListener('click', () => initDrawing('yellowgreen'));
+
+    //  Draw text popup buttons
+    document.getElementById('btn_accept_drawing_text').addEventListener('click', () => drawText(true));
+    document.getElementById('btn_close_drawing_text').addEventListener('click', () => showDOMElement('drawing-text-panel', false));
 
     //  Preview
     document.getElementById('preview-close').addEventListener('click', closePreview);
@@ -177,7 +70,7 @@ function initUIBindings() {
     document.getElementById('btn_asset_down').addEventListener('click', () => moveAsset(1));
     document.getElementById('btn_asset_save').addEventListener('click', saveAssetList);
     document.getElementById('btn_asset_load').addEventListener('click', () => loadAssetList());
-    document.getElementById('btn_asset_settings').addEventListener('click', showOverlayOptions);
+    document.getElementById('btn_asset_settings').addEventListener('click', showAssetOptions);
 
     //  Video overlay control buttons
     document.getElementById('btn_video_play_pause').addEventListener('click', onPlayVideo);
@@ -193,5 +86,16 @@ function initUIBindings() {
     document.getElementById('btn_image_fit_y').addEventListener('click', () => { currentSelectedAsset.resize = 'horizontal'; resizeAsset(overlayImage); });
     document.getElementById('btn_image_nofit').addEventListener('click', () => { currentSelectedAsset.resize = 'none'; resizeAsset(overlayImage); });
     document.getElementById('btn_text_hide').addEventListener('click', hideOverlay);
+}
 
+//  Detects general keypresses
+function keyDown(e) {
+
+    if (e.key === 'Escape') {
+        showDOMElement([
+            'videoasset-options-panel',
+            'drawing-text-panel',
+            'settings-panel'
+        ], false);
+    }
 }
