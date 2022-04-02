@@ -159,16 +159,10 @@ function moveValues(json, prefix, to = 'form') {
                     element[typeof json[key] === 'boolean' ? 'checked' : 'value'] = json[key];
             }
             else {
-                const val = element[typeof json[key] === 'boolean' ? 'checked' : 'value'];
-                json[key] = isNaN(val) ||
-                    typeof val === 'boolean' ||
-                    typeof val === 'undefined' ||
-                    val === null ||
-                    val.constructor.name === 'String'
-                    ?
-                    val
-                    :
-                    Number(val);
+                let val = element[typeof json[key] === 'boolean' ? 'checked' : 'value'];
+                if (!isNaN(val) && typeof val !== 'boolean' && typeof val !== 'object' && val !== '')
+                    val = Number(val);
+                json[key] = val;
             }
     });
 

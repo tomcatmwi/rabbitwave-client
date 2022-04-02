@@ -120,8 +120,6 @@ async function startCamera() {
 
         //  Border around asset
         if (!!currentOverlayAsset && currentOverlayAsset.border !== 'none' && !!currentResizeData) {
-            console.log(currentResizeData);
-
             ctx.fillStyle = currentOverlayAsset.border;
             ctx.fillRect(
                 currentResizeData.x - 5,

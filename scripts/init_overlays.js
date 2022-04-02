@@ -1,11 +1,12 @@
 function initOverlays() {
 
     const onCanPlayThrough = element => {
-        if (!element) return;
+        if (!element || element.showing) return;
         showDOMElement('video_controls', true);
         showDOMElement(['image_controls', 'text_controls'], false);
         setMuteButton(element);
         element.showing = true;
+        element.currentTime = timeToSeconds(currentOverlayAsset.startHour, currentOverlayAsset.startMinute, currentOverlayAsset.startSecond);
 
         if (currentOverlayAsset.autoplay)
             element.play()
@@ -14,10 +15,10 @@ function initOverlays() {
     }
 
     const setupVideoSlider = data => {
-        const startTime = timeToSeconds(currentSelectedAsset.startHour, currentSelectedAsset.startMinute, currentSelectedAsset.startSecond);
-        let endTime = timeToSeconds(currentSelectedAsset.endHour, currentSelectedAsset.endMinute, currentSelectedAsset.endSecond);
+        const startTime = timeToSeconds(currentOverlayAsset.startHour, currentOverlayAsset.startMinute, currentOverlayAsset.startSecond);
+        let endTime = timeToSeconds(currentOverlayAsset.endHour, currentOverlayAsset.endMinute, currentOverlayAsset.endSecond);
 
-        if (!currentSelectedAsset.cutEnd || endTime === 0 || endTime < startTime)
+        if (!currentOverlayAsset.cutEnd || endTime === 0 || endTime < startTime)
             endTime = data.path[0].duration;
 
         videoProgress.min = startTime;
