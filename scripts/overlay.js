@@ -3,7 +3,7 @@
 function setDisappearTimer(time) {
     if (typeof time === 'undefined')
         time = currentOverlayAsset.displayTime;
-    if (time > 0 && !currentOverlayAsset.useDisplayTime) {
+    if (time > 0 && currentOverlayAsset.useDisplayTime) {
         const id = currentOverlayAsset.id;
         setTimeout(() => {
             if (!!currentOverlayAsset && currentOverlayAsset.id === id)

@@ -103,6 +103,8 @@
         <input type="hidden" id="asset_option_id" />
         <input type="hidden" id="asset_option_type" />
         <input type="hidden" id="asset_option_calculated_data" />
+        <input type="hidden" id="asset_option_original_width" />
+        <input type="hidden" id="asset_option_original_height" />
 
         <div class="selector">
             <div>Name of asset:</div>
@@ -169,7 +171,8 @@
                   <option selected value="fit">Fit to video size</option>
                   <option value="horizontal">Fit to video width</option>
                   <option value="vertical">Fit to video height</option>
-                  <option value="none">No resize</option>
+                  <option value="none">Original size</option>
+                  <option value="custom">Custom size</option>
               </select>
           </div>     
 
@@ -182,13 +185,34 @@
                 <option value="vertical">Vertically</option>
               </select>
           </div>
+       
+        </div>
+
+        <div class="selector-row">
+
+          <div class="selector options_image options_video options_text">
+            <div>Custom width and height:</div>
+            <input disabled type="number" value="0" min="1" max="65535" id="asset_option_width" /> x <input disabled type="number" value="0" min="1" max="65535" id="asset_option_height" />
+            <div>
+              <input type="checkbox" id="asset_options_proportional_resize" disabled checked /><label for="asset_options_proportional_resize">Proportional resize</label>
+            </div>
+          </div>
+
+          <div class="selector options_video options_image">
+              <div>Border:</div>
+              <select disabled id="asset_option_border">
+                <option value="none">None</option>
+                <option value="black">Black</option>
+                <option value="white">White</option>
+              </select>
+          </div>          
 
           <div class="selector options_image options_video options_text">
             <div>Position, X, Y:</div>
             <input disabled type="number" value="0" min="-5000" max="5000" id="asset_option_x" /> ; <input disabled type="number" value="0" min="-5000" max="5000" id="asset_option_y" />
           </div>          
         </div>
-        
+
         <div class="selector-row">
           <div class="selector options_video options_image options_text">
               <div>Transition:</div>
@@ -241,7 +265,6 @@
             <div class="options_text"><input type="checkbox" id="asset_option_outline" checked /><label for="asset_option_outline">Black outline</label></div>
             <div class="options_image options_video"><input type="checkbox" id="asset_option_black" /><label for="asset_option_black">Black background</label></div>
             <div class="options_video"><input type="checkbox" id="asset_option_mute" /><label for="asset_option_mute">Mute</label></div>
-            <div class="options_video"><input type="checkbox" id="asset_option_hide_when_ends" /><label for="asset_option_hide_when_ends">Hide when ended</label></div>
             <div class="options_audio options_video"><input type="checkbox" id="asset_option_loop" /><label for="asset_option_loop">Loop</label></div>
             <div class="options_audio options_video"><input type="checkbox" id="asset_option_autoplay" /><label for="asset_option_autoplay">Play automatically</label></div>
         </div>   

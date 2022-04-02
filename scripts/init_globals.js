@@ -77,7 +77,12 @@ const VideoAsset = {
     useDisplayTime: true,   //  if false, display timer is off
 
     //  video and images only
-    resize: 'fit',              //  resize method
+    resize: 'fit',              //  resize method: "fit", "vertical", "horizontal", "none", "custom"
+    width: 320,                 //  width, if resize is "custom"
+    height: 200,                //  height, if resize is "custom"
+    originalWidth: 0,           //  original width
+    originalHeight: 0,          //  original height
+    border: 'none',             //  border about asset, if size is "custom". Values: "none", "black", "white"
     center: 'center',           //  center on video
     black: true,                //  black out where it's not covering the camera image
     x: 0,                       //  x position, ignored when stretch === true, for text assets it can be "left", "center", "right"

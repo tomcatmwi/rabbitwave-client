@@ -42,6 +42,40 @@ function showDOMElement(id, show) {
     });
 }
 
+//  Gets the original size of an asset from a file
+async function getAssetOriginalSize(asset) {
+    if (asset.type !== 'video' && asset.type !== 'image') return;
+    let sizes;
+
+    if (asset.type === 'video') {
+        sizes = await new Promise(resolve => {
+            const tempVideo = document.createElement('video');
+            tempVideo.addEventListener('loadedmetadata', e => {
+                resolve({
+                    width: e.path[0].videoWidth,
+                    height: e.path[0].videoHeight
+                });
+            });
+            tempVideo.src = asset.filename;
+        });
+    }
+
+    if (asset.type === 'image') {
+        sizes = await new Promise(resolve => {
+            const tempImg = new Image();
+            tempImg.onload = e => {
+                resolve({
+                    width: tempImg.width,
+                    height: tempImg.height
+                });
+            }
+            tempImg.src = asset.filename;
+        });
+    }
+
+    return sizes;
+}
+
 //  Resizes and centers the currently overlayed asset
 function resizeAsset(element) {
     overlayImageResized = true;
@@ -52,6 +86,11 @@ function resizeAsset(element) {
     let newHeight = element.height;
 
     //  Resize
+    if (currentSelectedAsset.resize === 'custom') {
+        newWidth = currentSelectedAsset.width;
+        newHeight = currentSelectedAsset.height;
+    }
+
     if (currentSelectedAsset.resize === 'fit') {
         if (newWidth < newHeight)
             currentSelectedAsset.resize = 'vertical'
@@ -121,7 +160,7 @@ function moveValues(json, prefix, to = 'form') {
             }
             else {
                 const val = element[typeof json[key] === 'boolean' ? 'checked' : 'value'];
-                json[key] = isNaN(val) ? val : Number(val)
+                json[key] = isNaN(val) || typeof val === 'boolean' || typeof val === 'undefined' || val === null ? val : Number(val);
             }
     });
 }

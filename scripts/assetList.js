@@ -43,6 +43,15 @@ function addNewAsset() {
                     type
                 };
 
+                //  Get asset size
+                const sizes = await getAssetOriginalSize(newAsset);
+                if (sizes) {
+                    newAsset.width = sizes.width;
+                    newAsset.height = sizes.height;
+                    newAsset.originalWidth = sizes.width;
+                    newAsset.originalHeight = sizes.height;
+                }
+
                 videoAssets.unshift(newAsset);
                 rebuildAssetList();
             });
@@ -90,6 +99,21 @@ function newAssetFile() {
         .then(async result => {
             if (result.canceled || !result.filePaths.length) return;
             document.getElementById('asset_option_filename').value = result.filePaths[0];
+
+            //  Get asset size
+            const sizes = await getAssetOriginalSize({
+                ...currentSelectedAsset,
+                width: sizes.width,
+                height: sizes.height
+            });
+
+            if (!!sizes) {
+                document.getElementById('asset_option_width').value = sizes.width;
+                document.getElementById('asset_option_height').value = sizes.height;
+                document.getElementById('asset_option_original_width').value = sizes.width;
+                document.getElementById('asset_option_original_height').value = sizes.height;
+            }
+
         })
         .catch(err => alert(err.message))
         .finally(() => dialogOpen = false);
@@ -118,6 +142,7 @@ function showAssetOptions() {
 
     moveValues(currentSelectedAsset, 'asset_option_', 'form');
 
+    //  Enable/disable form controls based on current asset values
     document.getElementById('asset_option_x').disabled = currentSelectedAsset.center !== 'none';
     document.getElementById('asset_option_y').disabled = currentSelectedAsset.center !== 'none';
 
@@ -128,6 +153,12 @@ function showAssetOptions() {
 
     document.getElementById('asset_option_use_display_time').checked = currentSelectedAsset.useDisplayTime;
     document.getElementById('asset_option_display_time').disabled = !currentSelectedAsset.useDisplayTime;
+
+    const disabled = currentSelectedAsset.resize !== 'custom';
+    document.getElementById('asset_option_width').disabled = disabled;
+    document.getElementById('asset_option_height').disabled = disabled;
+    document.getElementById('asset_options_proportional_resize').disabled = disabled;
+    document.getElementById('asset_option_border').disabled = disabled;
 
     showDOMElement('videoasset-options-panel', true);
 }

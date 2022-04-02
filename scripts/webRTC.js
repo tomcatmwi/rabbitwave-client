@@ -99,21 +99,35 @@ async function startCamera() {
 
     const ctx = videoCanvas.getContext('2d');
     ctx.globalAlpha = 1;
-    ctx.fillStyle = "rgba(0, 0, 0, .8)";
 
     //  Camera loop: refresh the canvas every 30 seconds
     const cameraLoop = () => {
 
         //  Camera feed, only add if there's no video or image being shown
         if (!overlayImage || overlayImage.width < videoCanvas.width || overlayImage.height < videoCanvas.height ||
-            !overlayVideo.showing || overlayVideo.width < videoCanvas.width || overlayVideo.height < videoCanvas.height)
+            !overlayVideo.showing || overlayVideo.width < videoCanvas.width || overlayVideo.height < videoCanvas.height) {
+            ctx.fillStyle = "rgba(0, 0, 0, .8)";
             ctx.drawImage(cameraVideo, 0, 0, cameraVideo.videoWidth, cameraVideo.videoHeight);
+        }
 
         //  Black background
         if (
             (!!overlayImage || (!!overlayVideo && overlayVideo.showing && overlayVideo.currentTime > 0)) &&
-            !!currentOverlayAsset && currentOverlayAsset.black)
+            !!currentOverlayAsset &&
+            currentOverlayAsset.black
+        )
             ctx.fillRect(0, 0, videoCanvas.width, videoCanvas.height);
+
+        //  Border around asset
+        if (!!currentOverlayAsset && currentOverlayAsset.border !== 'none') {
+            ctx.fillStyle = currentOverlayAsset.border;
+            ctx.fillRect(
+                currentResizeData.x - 5,
+                currentResizeData.y - 5,
+                currentResizeData.width + 10,
+                currentResizeData.height + 10
+            );
+        }
 
         //  Superimpose video
         if (overlayVideo.showing && overlayVideo.currentTime > 0) {
@@ -127,7 +141,7 @@ async function startCamera() {
         }
 
         //  Superimpose image
-        if (!!overlayImage)
+        if (!!overlayImage) {
             ctx.drawImage(
                 overlayImage,
                 currentResizeData.x,
@@ -135,6 +149,7 @@ async function startCamera() {
                 currentResizeData.width,
                 currentResizeData.height
             );
+        }
 
         //  Superimpose text
         if (!!overlayCanvas)

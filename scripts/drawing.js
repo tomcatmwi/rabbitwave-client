@@ -132,8 +132,8 @@ function drawText(textSelected = false) {
     const textField = document.getElementById('drawing-text-text');
     if (!textSelected) {
         showDOMElement('drawing-text-panel', true);
-        textField.value = '';
         textField.focus();
+        textField.select();
         return;
     }
 

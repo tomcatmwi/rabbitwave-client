@@ -62,7 +62,6 @@ function initUIBindings() {
     document.getElementById('btn_close_asset_options').addEventListener('click', () => showDOMElement('videoasset-options-panel', false));
 
     document.getElementById('asset_option_cut_end').addEventListener('change', (e) => {
-        console.log('yey', !e.target.checked)
         document.getElementById('asset_option_end_hour').disabled = !e.target.checked;
         document.getElementById('asset_option_end_minute').disabled = !e.target.checked;
         document.getElementById('asset_option_end_second').disabled = !e.target.checked;
@@ -77,6 +76,32 @@ function initUIBindings() {
         document.getElementById('asset_option_y').disabled = e.target.value !== 'none';
     });
 
+    document.getElementById('asset_option_cut_end').addEventListener('change', (e) => {
+        document.getElementById('asset_option_end_hour').disabled = !e.target.checked;
+        document.getElementById('asset_option_end_minute').disabled = !e.target.checked;
+        document.getElementById('asset_option_end_second').disabled = !e.target.checked;
+    });
+
+    document.getElementById('asset_option_resize').addEventListener('change', (e) => {
+        const disabled = e.target.value !== 'custom';
+        document.getElementById('asset_option_width').disabled = disabled;
+        document.getElementById('asset_option_height').disabled = disabled;
+        document.getElementById('asset_options_proportional_resize').disabled = disabled;
+        document.getElementById('asset_option_border').disabled = disabled;
+    });
+
+    //  Resize images/videos proportionally
+    document.getElementById('asset_option_width').addEventListener('change', (e) => {
+        if (!document.getElementById('asset_options_proportional_resize').checked) return;
+        const percent = e.target.value / (currentSelectedAsset.originalWidth / 100);
+        document.getElementById('asset_option_height').value = Math.round(percent * (currentSelectedAsset.originalHeight / 100));
+    });
+
+    document.getElementById('asset_option_height').addEventListener('change', (e) => {
+        if (!document.getElementById('asset_options_proportional_resize').checked) return;
+        const percent = e.target.value / (currentSelectedAsset.originalHeight / 100);
+        document.getElementById('asset_option_width').value = Math.round(percent * (currentSelectedAsset.originalWidth / 100));
+    });
 
     //  Asset control buttons
     document.getElementById('btn_asset_new').addEventListener('click', addNewAsset);
