@@ -3,7 +3,6 @@ styles/css
 .git
 .github
 .gitignore
-.electron-ignore
 package-lock.json
 *.webm
 *.mp4
@@ -11,3 +10,4 @@ package-lock.json
 *.avi
 *.mp3
 ffmpeg
+assets

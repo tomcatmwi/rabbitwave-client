@@ -104,17 +104,19 @@ async function startCamera() {
     //  Camera loop: refresh the canvas every 30 seconds
     const cameraLoop = () => {
 
-        //  Camera feed, only if there's no video or image being shown
+        //  Camera feed, only add if there's no video or image being shown
         if (!overlayImage || overlayImage.width < videoCanvas.width || overlayImage.height < videoCanvas.height ||
             !overlayVideo.showing || overlayVideo.width < videoCanvas.width || overlayVideo.height < videoCanvas.height)
             ctx.drawImage(cameraVideo, 0, 0, cameraVideo.videoWidth, cameraVideo.videoHeight);
 
         //  Black background
-        if ((!!overlayImage || overlayVideo.showing) && !!currentOverlayAsset && currentOverlayAsset.black)
+        if (
+            (!!overlayImage || (!!overlayVideo && overlayVideo.showing && overlayVideo.currentTime > 0)) &&
+            !!currentOverlayAsset && currentOverlayAsset.black)
             ctx.fillRect(0, 0, videoCanvas.width, videoCanvas.height);
 
         //  Superimpose video
-        if (overlayVideo.showing) {
+        if (overlayVideo.showing && overlayVideo.currentTime > 0) {
             ctx.drawImage(
                 overlayVideo,
                 currentResizeData.x,

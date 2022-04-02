@@ -93,8 +93,7 @@ function drawStart(e) {
 
 //  Drawing in progress
 function draw(e) {
-    if (!drawing.active || e.buttons === 0) return;
-    drawing.arrow.active = false;
+    if (!drawing.active || drawing.arrow.active || e.buttons === 0) return;
 
     drawing.prevX = drawing.x;
     drawing.prevY = drawing.y;

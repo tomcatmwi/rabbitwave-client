@@ -61,6 +61,23 @@ function initUIBindings() {
     document.getElementById('btn_accept_asset_changes').addEventListener('click', acceptAssetChanges);
     document.getElementById('btn_close_asset_options').addEventListener('click', () => showDOMElement('videoasset-options-panel', false));
 
+    document.getElementById('asset_option_cut_end').addEventListener('change', (e) => {
+        console.log('yey', !e.target.checked)
+        document.getElementById('asset_option_end_hour').disabled = !e.target.checked;
+        document.getElementById('asset_option_end_minute').disabled = !e.target.checked;
+        document.getElementById('asset_option_end_second').disabled = !e.target.checked;
+    });
+
+    document.getElementById('asset_option_use_display_time').addEventListener('change', (e) => {
+        document.getElementById('asset_option_display_time').disabled = !e.target.checked;
+    });
+
+    document.getElementById('asset_option_center').addEventListener('change', (e) => {
+        document.getElementById('asset_option_x').disabled = e.target.value !== 'none';
+        document.getElementById('asset_option_y').disabled = e.target.value !== 'none';
+    });
+
+
     //  Asset control buttons
     document.getElementById('btn_asset_new').addEventListener('click', addNewAsset);
     document.getElementById('btn_asset_text').addEventListener('click', addText);
@@ -73,12 +90,12 @@ function initUIBindings() {
     document.getElementById('btn_asset_settings').addEventListener('click', showAssetOptions);
 
     //  Video overlay control buttons
-    document.getElementById('btn_video_play_pause').addEventListener('click', onPlayVideo);
-    document.getElementById('btn_video_stop').addEventListener('click', onStopVideo);
+    document.getElementById('btn_video_play_pause').addEventListener('click', playMedia);
+    document.getElementById('btn_video_stop').addEventListener('click', stopMedia);
     document.getElementById('btn_video_eject').addEventListener('click', hideOverlay);
-    document.getElementById('video_progress').addEventListener('input', (e) => overlayVideo.currentTime = e.target.value);
-    document.getElementById('video_volume').addEventListener('input', onSetVolume);
-    document.getElementById('btn_video_mute').addEventListener('click', () => onMuteVideo());
+    document.getElementById('video_progress').addEventListener('input', seekMedia);
+    document.getElementById('video_volume').addEventListener('input', setVolume);
+    document.getElementById('btn_video_mute').addEventListener('click', () => muteMedia());
 
     //  Image overlay control buttons
     document.getElementById('btn_image_hide').addEventListener('click', hideOverlay);

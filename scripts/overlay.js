@@ -3,7 +3,7 @@
 function setDisappearTimer(time) {
     if (typeof time === 'undefined')
         time = currentOverlayAsset.displayTime;
-    if (time > 0 && !currentOverlayAsset.displayTimerActive) {
+    if (time > 0 && !currentOverlayAsset.useDisplayTime) {
         const id = currentOverlayAsset.id;
         setTimeout(() => {
             if (!!currentOverlayAsset && currentOverlayAsset.id === id)
@@ -56,7 +56,12 @@ function showText() {
     ctx.textAlign = 'left';
     ctx.font = `${currentSelectedAsset.fontSize}px ${currentSelectedAsset.font}`;
     ctx.strokeStyle = 'black';
-    ctx.lineWidth = 6;
+    ctx.lineCap = 'round';
+
+    let lineWidth = currentSelectedAsset.fontSize / 6;
+    if (lineWidth > 6) lineWidth = 6;
+    if (lineWidth < 1) lineWidth = 1;
+    ctx.lineWidth = lineWidth;
 
     const lineHeight = Number((currentSelectedAsset.fontSize * 1.3).toFixed(2));
 
@@ -83,14 +88,14 @@ function showText() {
             switch (currentSelectedAsset.align) {
                 case ('center'): ctx.strokeText(lines[line].text, x, y); break;
                 case ('right'): ctx.strokeText(lines[line].text, x, y); break;
-                default: ctx.strokeText(lines[line].text, 0, y);
+                default: ctx.strokeText(lines[line].text, 2, y);
             }
         }
 
         switch (currentSelectedAsset.align) {
             case ('center'): ctx.fillText(lines[line].text, x, y); break;
             case ('right'): ctx.fillText(lines[line].text, x, y); break;
-            default: ctx.fillText(lines[line].text, 0, y);
+            default: ctx.fillText(lines[line].text, 2, y);
         }
     }
 

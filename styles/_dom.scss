@@ -22,6 +22,11 @@ input[type=text], input[type=checkbox], input[type=number], input[type=button], 
         width: 100%;
         box-sizing: border-box;
     }
+
+    &:disabled {
+        background: darkgray;
+        color: black;
+    }
 }
 
 input[type=checkbox] {

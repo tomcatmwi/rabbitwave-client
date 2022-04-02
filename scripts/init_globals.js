@@ -56,11 +56,11 @@ let appSettings = {
 //  Video asset template
 const VideoAsset = {
 
-    id: null,                   //  unique ID, random generated
-    type: null,                 //  "video", "image", "audio"
-    name: null,                 //  default is filename
-    filename: null,             //  full path to file
-    description: null,          //  notes or description
+    id: 'xxxxxxxxxx',           //  unique ID, random generated
+    type: 'unknown',            //  "video", "image", "audio"
+    name: '',                   //  default is filename
+    filename: '',               //  full path to file
+    description: '',            //  notes or description
     calculatedData: null,       //  any kind of calculated data, such as resize, etc
     transition: 'fade',         //  transition effect when appearing or disappearing (not currently implemented)
 
@@ -73,8 +73,8 @@ const VideoAsset = {
     outline: true,              //  Black outline
 
     //  images and text only
-    displayTime: 5,             //  time in seconds to display, 0 means stays until manually hidden
-    displayTimerActive: true,    //  ignore display time, if set
+    displayTime: 5,             //  display time in seconds, disappears when passed
+    useDisplayTime: true,   //  if false, display timer is off
 
     //  video and images only
     resize: 'fit',              //  resize method
@@ -86,19 +86,19 @@ const VideoAsset = {
     //  video only
     mute: true,                 //  audio on / off
     hideWhenEnds: true,         //  hide automatically when video ends (ignored when loop === true)
-    hideDelay: 1000,            //  delay to hide video when ended in milliseconds
+    hideDelay: 1,               //  delay to hide video when ended in seconds
 
     //  video and audio only
     startHour: 0,               //  start position, hours
     startMinute: 0,             //  start position, minutes
     startSecond: 0,             //  start position, seconds
-    ignoreEnd: true,            //  ignore end position, if set
+    cutEnd: false,              //  cuts off video at set end time
     endHour: 0,                 //  end position, minutes
     endMinute: 0,               //  end position, minutes
     endSecond: 0,               //  end position, seconds
     loop: false,                //  loop endlessly
     volume: 100,                //  volume, 0-100
-    micOff: true                //  disable microphone while playing
+    autoplay: true              //  play automatically as it appears
 };
 
 //  This will store the asset list

@@ -332,6 +332,9 @@ input[type=text], input[type=checkbox], input[type=number], input[type=button], 
   input[type=text].fullwidth, input[type=checkbox].fullwidth, input[type=number].fullwidth, input[type=button].fullwidth, button.fullwidth, select.fullwidth, textarea.fullwidth {
     width: 100%;
     box-sizing: border-box; }
+  input[type=text]:disabled, input[type=checkbox]:disabled, input[type=number]:disabled, input[type=button]:disabled, button:disabled, select:disabled, textarea:disabled {
+    background: darkgray;
+    color: black; }
 
 input[type=checkbox] {
   border: 1px solid gray;
@@ -423,7 +426,7 @@ label {
     flex-direction: column;
     flex-wrap: wrap;
     row-gap: .5em; }
-  .popup #asset_option_description {
+  .popup #asset_option_description, .popup #asset_option_text {
     resize: none;
     height: 6em; }
 

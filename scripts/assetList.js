@@ -117,6 +117,18 @@ function showAssetOptions() {
         elements[i].classList.remove('hidden');
 
     moveValues(currentSelectedAsset, 'asset_option_', 'form');
+
+    document.getElementById('asset_option_x').disabled = currentSelectedAsset.center !== 'none';
+    document.getElementById('asset_option_y').disabled = currentSelectedAsset.center !== 'none';
+
+    document.getElementById('asset_option_use_display_time').checked = currentSelectedAsset.useDisplayTime;
+    document.getElementById('asset_option_end_hour').disabled = !currentSelectedAsset.cutEnd;
+    document.getElementById('asset_option_end_minute').disabled = !currentSelectedAsset.cutEnd;
+    document.getElementById('asset_option_end_second').disabled = !currentSelectedAsset.cutEnd;
+
+    document.getElementById('asset_option_use_display_time').checked = currentSelectedAsset.useDisplayTime;
+    document.getElementById('asset_option_display_time').disabled = !currentSelectedAsset.useDisplayTime;
+
     showDOMElement('videoasset-options-panel', true);
 }
 

@@ -4,7 +4,8 @@
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
-    "start": "node-sass -r ./styles -o ./styles/css && electron ."
+    "start": "node-sass -r ./styles -o ./styles/css && electron .",
+    "build": "node-sass -r ./styles -o ./styles/css && electron-packager . \"Rabbitwave Vlogger\" --platform=win32 --arch=x64 --ignore=.electron-ignore"
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [

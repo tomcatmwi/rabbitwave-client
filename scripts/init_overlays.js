@@ -5,14 +5,18 @@ function initOverlays() {
         showDOMElement(['image_controls', 'text_controls'], false);
         setMuteButton(element);
         element.showing = true;
-        element.play();
+
+        if (currentOverlayAsset.autoplay)
+            element.play()
+        else
+            onPause();
     }
 
     const setupVideoSlider = data => {
         const startTime = timeToSeconds(currentSelectedAsset.startHour, currentSelectedAsset.startMinute, currentSelectedAsset.startSecond);
         let endTime = timeToSeconds(currentSelectedAsset.endHour, currentSelectedAsset.endMinute, currentSelectedAsset.endSecond);
 
-        if (endTime === 0 || endTime < startTime || currentSelectedAsset.ignoreEnd)
+        if (endTime === 0 || endTime < startTime || !currentSelectedAsset.cutEnd)
             endTime = data.path[0].duration;
 
         videoProgress.min = startTime;
@@ -35,8 +39,13 @@ function initOverlays() {
     }
 
     const onEnded = () => {
-        if (!currentOverlayAsset.loop && currentOverlayAsset.hideWhenEnds)
-            setDisappearTimer(currentOverlayAsset.hideDelay);
+        if (!currentOverlayAsset.loop && currentOverlayAsset.hideWhenEnds) {
+            const id = currentOverlayAsset.id;
+            setTimeout(() => {
+                if (currentOverlayAsset.id === id)
+                    hideOverlay();
+            }, currentOverlayAsset.hideDelay);
+        }
     }
 
     const onTimeUpdate = element => {
@@ -46,7 +55,7 @@ function initOverlays() {
             element.currentTime = videoProgress.min;
 
         //  Don't allow a position higher than the starting point
-        if (!element.ignoreEnd && element.currentTime > videoProgress.max) {
+        if (element.cutEnd && element.currentTime > videoProgress.max) {
 
             if (!!currentOverlayAsset && !currentOverlayAsset.loop) {
 

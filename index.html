@@ -176,8 +176,8 @@
           <div class="selector options_video options_image options_text">
               <div>Center:</div>
               <select id="asset_option_center">
-                <option selected value="center">Center</option>
                 <option value="none">No centering</option>
+                <option selected value="center">Center</option>
                 <option value="horizontal">Horizontally</option>
                 <option value="vertical">Vertically</option>
               </select>
@@ -209,12 +209,12 @@
           </div>          
 
           <div class="selector options_image options_text">
-              <div><input type="checkbox" id="asset_option_display_timer_active" /><label for="asset_option_display_timer_active">Hide after</label></div>
+              <div><input type="checkbox" id="asset_option_use_display_time" /><label for="asset_option_use_display_time">Hide after</label></div>
               <input disabled type="number" value="0" min="0" max="120" id="asset_option_display_time" /> sec
           </div>          
 
           <div class="selector options_video">
-              <div>Hide delay:</div>
+              <div><input type="checkbox" id="asset_option_hide_when_ends" /><label for="asset_option_hide_when_ends">Hide when ends</label></div>
               <input type="number" value="1" min="0" max="120" id="asset_option_hide_delay" /> sec
           </div>
 
@@ -222,14 +222,14 @@
         
         <div class="options_video options_audio selector-row">
           <div class="selector">
-            <div>Start time:</div>
+            <div>Start at time:</div>
             <input type="number" value="0" min="0" max="23" id="asset_option_start_hour" /> :
             <input type="number" value="0" min="0" max="59" id="asset_option_start_minute" /> :
             <input type="number" value="0" min="0" max="59" id="asset_option_start_second" />
           </div>
 
           <div class="selector">
-            <div><input type="checkbox" id="asset_option_ignore_end" checked /><label for="asset_option_ignore_end">End time</label></div>
+            <div><input type="checkbox" id="asset_option_cut_end" checked /><label for="asset_option_cut_end">End playing at:</label></div>
             <input type="number" value="0" min="0" max="23" id="asset_option_end_hour" /> :
             <input type="number" value="0" min="0" max="59" id="asset_option_end_minute" /> :
             <input type="number" value="0" min="0" max="59" id="asset_option_end_second" />
@@ -243,7 +243,7 @@
             <div class="options_video"><input type="checkbox" id="asset_option_mute" /><label for="asset_option_mute">Mute</label></div>
             <div class="options_video"><input type="checkbox" id="asset_option_hide_when_ends" /><label for="asset_option_hide_when_ends">Hide when ended</label></div>
             <div class="options_audio options_video"><input type="checkbox" id="asset_option_loop" /><label for="asset_option_loop">Loop</label></div>
-            <div class="options_audio options_video"><input type="checkbox" id="asset_option_mic_off" /><label for="asset_option_mic_off">Microphone off</label></div>
+            <div class="options_audio options_video"><input type="checkbox" id="asset_option_autoplay" /><label for="asset_option_autoplay">Play automatically</label></div>
         </div>   
 
         <div class="selector">
@@ -428,10 +428,8 @@
     <!-- General utility functions -->
     <script type="text/javascript" src="./scripts/utils.js"></script>
 
-    <!-- Initialization routine, defaults and DOM events -->
-    <script type="text/javascript" src="./scripts/init_ui.js"></script>
-    <script type="text/javascript" src="./scripts/init_previews.js"></script>
-    <script type="text/javascript" src="./scripts/init_overlays.js"></script>
+    <!-- Event functions of video buttons (play, pause, etc) -->
+    <script type="text/javascript" src="./scripts/videoControls.js"></script>    
 
     <!-- Functions related to application settings -->
     <script type="text/javascript" src="./scripts/settings.js"></script>
@@ -442,9 +440,6 @@
     <!-- Functions related to superimposing overlays -->
     <script type="text/javascript" src="./scripts/overlay.js"></script>
 
-    <!-- Event functions of video buttons (play, pause, etc) -->
-    <script type="text/javascript" src="./scripts/videoControls.js"></script>
-
     <!-- Drawing toolkit -->
     <script type="text/javascript" src="./scripts/drawing.js"></script>
 
@@ -453,6 +448,11 @@
     
     <!-- MediaSwitcher -->
     <script type="text/javascript" src="./scripts/dependencies/MediaSwitcher.class.js"></script>
+
+    <!-- Initialization routine, defaults and DOM events -->
+    <script type="text/javascript" src="./scripts/init_ui.js"></script>
+    <script type="text/javascript" src="./scripts/init_previews.js"></script>
+    <script type="text/javascript" src="./scripts/init_overlays.js"></script>    
 
     <!-- Launcher -->
     <script defer type="text/javascript" src="./index.js"></script>

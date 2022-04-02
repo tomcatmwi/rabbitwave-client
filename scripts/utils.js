@@ -53,10 +53,10 @@ function resizeAsset(element) {
 
     //  Resize
     if (currentSelectedAsset.resize === 'fit') {
-        if (width < height)
-            currentSelectedAsset.resize = 'horizontal'
+        if (newWidth < newHeight)
+            currentSelectedAsset.resize = 'vertical'
         else
-            currentSelectedAsset.resize = 'vertical';
+            currentSelectedAsset.resize = 'horizontal';
     }
 
     if (currentSelectedAsset.resize === 'horizontal') {
@@ -117,10 +117,12 @@ function moveValues(json, prefix, to = 'form') {
         else
             if (to === 'form') {
                 if (json[key] !== null)
-                    element[typeof json[key] === 'boolean' ? 'checked' : 'value'] = json[key]
+                    element[typeof json[key] === 'boolean' ? 'checked' : 'value'] = json[key];
             }
-            else
-                json[key] = element[typeof json[key] === 'boolean' ? 'checked' : 'value'];
+            else {
+                const val = element[typeof json[key] === 'boolean' ? 'checked' : 'value'];
+                json[key] = isNaN(val) ? val : Number(val)
+            }
     });
 }
 
