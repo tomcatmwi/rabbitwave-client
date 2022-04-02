@@ -119,7 +119,9 @@ async function startCamera() {
             ctx.fillRect(0, 0, videoCanvas.width, videoCanvas.height);
 
         //  Border around asset
-        if (!!currentOverlayAsset && currentOverlayAsset.border !== 'none') {
+        if (!!currentOverlayAsset && currentOverlayAsset.border !== 'none' && !!currentResizeData) {
+            console.log(currentResizeData);
+
             ctx.fillStyle = currentOverlayAsset.border;
             ctx.fillRect(
                 currentResizeData.x - 5,
@@ -130,7 +132,7 @@ async function startCamera() {
         }
 
         //  Superimpose video
-        if (overlayVideo.showing && overlayVideo.currentTime > 0) {
+        if (overlayVideo.showing && overlayVideo.currentTime > 0 && !!currentResizeData) {
             ctx.drawImage(
                 overlayVideo,
                 currentResizeData.x,
@@ -141,7 +143,7 @@ async function startCamera() {
         }
 
         //  Superimpose image
-        if (!!overlayImage) {
+        if (!!overlayImage && !!currentResizeData) {
             ctx.drawImage(
                 overlayImage,
                 currentResizeData.x,
@@ -152,7 +154,7 @@ async function startCamera() {
         }
 
         //  Superimpose text
-        if (!!overlayCanvas)
+        if (!!overlayCanvas && !!currentResizeData)
             ctx.drawImage(
                 overlayCanvas,
                 0,

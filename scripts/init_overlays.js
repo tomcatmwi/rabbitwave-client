@@ -1,6 +1,7 @@
 function initOverlays() {
 
     const onCanPlayThrough = element => {
+        if (!element) return;
         showDOMElement('video_controls', true);
         showDOMElement(['image_controls', 'text_controls'], false);
         setMuteButton(element);
@@ -16,7 +17,7 @@ function initOverlays() {
         const startTime = timeToSeconds(currentSelectedAsset.startHour, currentSelectedAsset.startMinute, currentSelectedAsset.startSecond);
         let endTime = timeToSeconds(currentSelectedAsset.endHour, currentSelectedAsset.endMinute, currentSelectedAsset.endSecond);
 
-        if (endTime === 0 || endTime < startTime || !currentSelectedAsset.cutEnd)
+        if (!currentSelectedAsset.cutEnd || endTime === 0 || endTime < startTime)
             endTime = data.path[0].duration;
 
         videoProgress.min = startTime;
@@ -49,13 +50,14 @@ function initOverlays() {
     }
 
     const onTimeUpdate = element => {
+        if (!element || !currentOverlayAsset) return;
 
         //  Don't allow a position lower than the starting point
         if (element.currentTime < videoProgress.min)
             element.currentTime = videoProgress.min;
 
         //  Don't allow a position higher than the starting point
-        if (element.cutEnd && element.currentTime > videoProgress.max) {
+        if (currentOverlayAsset.cutEnd && element.currentTime > videoProgress.max) {
 
             if (!!currentOverlayAsset && !currentOverlayAsset.loop) {
 

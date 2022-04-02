@@ -82,8 +82,8 @@ function resizeAsset(element) {
     const width = cameraVideo.videoWidth;
     const height = cameraVideo.videoHeight;
 
-    let newWidth = element.width;
-    let newHeight = element.height;
+    let newWidth = Number(element.width);
+    let newHeight = Number(element.height);
 
     //  Resize
     if (currentSelectedAsset.resize === 'custom') {
@@ -160,9 +160,18 @@ function moveValues(json, prefix, to = 'form') {
             }
             else {
                 const val = element[typeof json[key] === 'boolean' ? 'checked' : 'value'];
-                json[key] = isNaN(val) || typeof val === 'boolean' || typeof val === 'undefined' || val === null ? val : Number(val);
+                json[key] = isNaN(val) ||
+                    typeof val === 'boolean' ||
+                    typeof val === 'undefined' ||
+                    val === null ||
+                    val.constructor.name === 'String'
+                    ?
+                    val
+                    :
+                    Number(val);
             }
     });
+
 }
 
 //  Compares two objects to verify whether they have the same key structure
