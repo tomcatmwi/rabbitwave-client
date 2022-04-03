@@ -100,6 +100,7 @@ async function startCamera() {
     const ctx = videoCanvas.getContext('2d');
     ctx.lineCap = 'round';
     ctx.globalAlpha = 1;
+    ctx.fillStyle = "rgba(0, 0, 0, .8)";
 
     //  Camera loop: refresh the canvas every 30 seconds
     const cameraLoop = () => {
@@ -107,7 +108,6 @@ async function startCamera() {
         //  Camera feed, only add if there's no video or image being shown
         if (!overlayImage || overlayImage.width < videoCanvas.width || overlayImage.height < videoCanvas.height ||
             !overlayVideo.showing || overlayVideo.width < videoCanvas.width || overlayVideo.height < videoCanvas.height) {
-            ctx.fillStyle = "rgba(0, 0, 0, .8)";
             ctx.drawImage(cameraVideo, 0, 0, cameraVideo.videoWidth, cameraVideo.videoHeight);
         }
 
@@ -121,6 +121,7 @@ async function startCamera() {
 
         //  Border around asset
         if (!!currentOverlayAsset && currentOverlayAsset.border !== 'none' && !!currentResizeData) {
+            ctx.save();
             ctx.fillStyle = currentOverlayAsset.border;
             ctx.fillRect(
                 currentResizeData.x - 5,
@@ -128,6 +129,7 @@ async function startCamera() {
                 currentResizeData.width + 10,
                 currentResizeData.height + 10
             );
+            ctx.restore();
         }
 
         //  Superimpose video
@@ -183,22 +185,25 @@ async function startCamera() {
 
         //  Preview arrow being drawn
         if (drawing.arrow.active && drawing.arrow.x > 0 && drawing.arrow.y > 0) {
+            ctx.save();
             ctx.strokeStyle = drawing.ctx.strokeStyle;
             ctx.lineWidth = drawing.ctx.lineWidth;
-
             ctx.beginPath();
-            ctx.setLineDash = ([5, 10]);
+            ctx.setLineDash([5, 10]);
             ctx.moveTo(drawing.arrow.x, drawing.arrow.y);
             ctx.lineTo(drawing.x, drawing.y);
             ctx.stroke();
             ctx.closePath();
+            ctx.restore();
         }
 
         //  Preview text being drawn
         if (drawing.text) {
+            ctx.save();
             ctx.fillStyle = drawing.ctx.fillStyle;
             ctx.font = `${document.getElementById('drawing-text-font-size').value}px ${document.getElementById('drawing-text-font').value}`;
             ctx.fillText(drawing.text, drawing.x, drawing.y + 15);
+            ctx.restore();
         }
 
         setTimeout(cameraLoop, (1000 / 30));

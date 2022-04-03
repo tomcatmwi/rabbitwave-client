@@ -20,6 +20,7 @@ function initUIBindings() {
 
     //  Dragging on the video: moves overlay
     videoMonitor.addEventListener('wheel', overlayWheel);
+    videoMonitor.addEventListener('wheel', drawRotate);
     videoMonitor.addEventListener('mousedown', drawStart);
     videoMonitor.addEventListener('mousemove', draw);
     videoMonitor.addEventListener('contextmenu', cancelDraw);

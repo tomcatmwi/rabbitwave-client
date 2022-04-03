@@ -174,17 +174,18 @@ let overlayVisible = false;
 
 //  Drawing canvas
 let drawing = {
-    active: false,
-    canvas: document.createElement('canvas'),
-    x: 0,
+    active: false,                                  //  are we drawing?
+    canvas: document.createElement('canvas'),       //  the drawing canvas
+    x: 0,                                           //  current mouse position on the canvas (translated coordinates)
     y: 0,
-    prevX: 0,
+    prevX: 0,                                       //  previous mouse position
     prevY: 0,
     text: null,
-    arrow: {
-        active: false,
-        x: -1,
+    rotate: 0,                                      //  rotate, currently only used for text
+    arrow: {                                        //  current arrow drawing
+        active: false,                              //  are we drawing an arrow?
+        x: -1,                                      //  arrow starting point (-1 means no starting point)
         y: -1
     }
 };
-drawing.ctx = drawing.canvas.getContext('2d')
+drawing.ctx = drawing.canvas.getContext('2d');      //  drawing context

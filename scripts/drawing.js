@@ -113,6 +113,7 @@ function draw(e) {
 function cancelDraw() {
     drawing.arrow.active = false;
     drawing.text = null;
+    drawing.rotate = 0;
     videoMonitor.classList.remove('text');
 }
 
@@ -154,4 +155,19 @@ function drawText(textSelected = false) {
     drawing.ctx.font = `${document.getElementById('drawing-text-font-size').value}px ${document.getElementById('drawing-text-font').value}`;
     drawing.text = textField.value.trim();
     videoMonitor.classList.add('text');
+}
+
+function drawRotate(e) {
+    if (e.altKey)
+        drawing.rotate = 0
+    else
+        drawing.rotate += e.deltaY > 0 ? 1 : -1;
+
+    if (drawing.rotate > 360)
+        drawing.rotate = 360;
+
+    if (drawing.rotate < 0)
+        drawing.rotate = 0;
+
+
 }
