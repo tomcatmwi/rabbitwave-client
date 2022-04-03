@@ -98,6 +98,7 @@ async function startCamera() {
     drawing.canvas.height = videoSize[1];
 
     const ctx = videoCanvas.getContext('2d');
+    ctx.lineCap = 'round';
     ctx.globalAlpha = 1;
 
     //  Camera loop: refresh the canvas every 30 seconds
@@ -166,7 +167,7 @@ async function startCamera() {
             );
 
         //  Superimpose drawing canvas
-        if (!!drawing.active) {
+        if (drawing.active) {
             ctx.drawImage(
                 drawing.canvas,
                 0,
@@ -178,7 +179,26 @@ async function startCamera() {
                 videoCanvas.width,
                 videoCanvas.height
             );
+        }
 
+        //  Preview arrow being drawn
+        if (drawing.arrow.active && drawing.arrow.x > 0 && drawing.arrow.y > 0) {
+            ctx.strokeStyle = drawing.ctx.strokeStyle;
+            ctx.lineWidth = drawing.ctx.lineWidth;
+
+            ctx.beginPath();
+            ctx.setLineDash = ([5, 10]);
+            ctx.moveTo(drawing.arrow.x, drawing.arrow.y);
+            ctx.lineTo(drawing.x, drawing.y);
+            ctx.stroke();
+            ctx.closePath();
+        }
+
+        //  Preview text being drawn
+        if (drawing.text) {
+            ctx.fillStyle = drawing.ctx.fillStyle;
+            ctx.font = `${document.getElementById('drawing-text-font-size').value}px ${document.getElementById('drawing-text-font').value}`;
+            ctx.fillText(drawing.text, drawing.x, drawing.y + 15);
         }
 
         setTimeout(cameraLoop, (1000 / 30));

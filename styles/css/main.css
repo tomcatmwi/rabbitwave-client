@@ -469,10 +469,11 @@ label {
       grid-row-end: 1;
       grid-column-start: 1;
       grid-column-end: 1;
-      z-index: 1000;
-      cursor: crosshair; }
+      z-index: 1000; }
       .left-side #monitor-wrapper #video-monitor.text {
-        cursor: text; }
+        cursor: text !important; }
+      .left-side #monitor-wrapper #video-monitor.drawing {
+        cursor: crosshair; }
   .left-side #notes {
     grid-row-start: 2;
     grid-row-end: 3;

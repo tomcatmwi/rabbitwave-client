@@ -66,6 +66,7 @@ function createWindow() {
     title: 'Rabbitwave Vlogger',
     fullScreenWindowTitle: true,
     autoHideMenuBar: true,
+    nodeIntegrationInWorker: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       enableRemoteModule: true,

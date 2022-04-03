@@ -22,7 +22,7 @@ function initUIBindings() {
     videoMonitor.addEventListener('wheel', overlayWheel);
     videoMonitor.addEventListener('mousedown', drawStart);
     videoMonitor.addEventListener('mousemove', draw);
-    videoMonitor.addEventListener('contextmenu', drawEndText);
+    videoMonitor.addEventListener('contextmenu', cancelDraw);
 
     document.addEventListener('keydown', e => keyDown(e))
 
@@ -39,6 +39,7 @@ function initUIBindings() {
     document.getElementById('btn_image_color_blue').addEventListener('click', () => initDrawing('blue'));
     document.getElementById('btn_image_color_yellow').addEventListener('click', () => initDrawing('yellow'));
     document.getElementById('btn_image_color_yellowgreen').addEventListener('click', () => initDrawing('yellowgreen'));
+    document.getElementById('drawing-text-text').addEventListener('dblclick', e => e.target.value = 'Default text');
 
     //  Draw text popup buttons
     document.getElementById('btn_accept_drawing_text').addEventListener('click', () => drawText(true));

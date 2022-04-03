@@ -31,11 +31,15 @@
             grid-column-start: 1;
             grid-column-end: 1;
             z-index: 1000;
-            cursor: crosshair;
 
             &.text {
-                cursor: text;
+                cursor: text !important;
             }
+
+            &.drawing {
+                cursor: crosshair;
+            }
+
         }
     }
 
