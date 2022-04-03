@@ -101,6 +101,7 @@ async function startCamera() {
     ctx.lineCap = 'round';
     ctx.globalAlpha = 1;
     ctx.fillStyle = "rgba(0, 0, 0, .8)";
+    ctx.save();
 
     //  Camera loop: refresh the canvas every 30 seconds
     const cameraLoop = () => {
@@ -121,7 +122,6 @@ async function startCamera() {
 
         //  Border around asset
         if (!!currentOverlayAsset && currentOverlayAsset.border !== 'none' && !!currentResizeData) {
-            ctx.save();
             ctx.fillStyle = currentOverlayAsset.border;
             ctx.fillRect(
                 currentResizeData.x - 5,
@@ -185,7 +185,6 @@ async function startCamera() {
 
         //  Preview arrow being drawn
         if (drawing.arrow.active && drawing.arrow.x > 0 && drawing.arrow.y > 0) {
-            ctx.save();
             ctx.strokeStyle = drawing.ctx.strokeStyle;
             ctx.lineWidth = drawing.ctx.lineWidth;
             ctx.beginPath();
@@ -199,7 +198,6 @@ async function startCamera() {
 
         //  Preview text being drawn
         if (drawing.text) {
-            ctx.save();
             ctx.fillStyle = drawing.ctx.fillStyle;
             ctx.font = `${document.getElementById('drawing-text-font-size').value}px ${document.getElementById('drawing-text-font').value}`;
             ctx.fillText(drawing.text, drawing.x, drawing.y + 15);
