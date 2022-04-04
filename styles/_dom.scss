@@ -68,6 +68,10 @@ label {
     margin-left: 0.5em;
 }
 
+option:checked { 
+    background: lightgray;
+}
+
 .text-button {
     width: auto !important;
 }

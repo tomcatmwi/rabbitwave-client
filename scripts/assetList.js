@@ -1,3 +1,21 @@
+//  Adds a simple divider to the asset list
+async function addAssetListDivider() {
+    const newAsset = { ...VideoAsset };
+    newAsset.id = await electron.nanoid();
+    newAsset.name = 'List divider';
+    newAsset.type = 'divider';
+    insertNewAsset(newAsset);
+}
+
+//  Inserts a new asset at the selected position
+function insertNewAsset(asset) {
+    let index = assetList.options.selectedIndex;
+    if (index < 0)
+        index = !!videoAssets.length ? videoAssets.length - 1 : 0;
+    videoAssets.splice(index + 1, 0, asset);
+    rebuildAssetList(asset.id);
+}
+
 //  Adds a new video, audio or image asset to the list
 function addNewAsset() {
 
@@ -24,12 +42,17 @@ function addNewAsset() {
             result.filePaths.forEach(async file => {
 
                 //  Determine file type (image, video, audio)
-                const extension = file.substr(file.lastIndexOf('.') + 1, file.length);
+                const extension = file.substr(file.lastIndexOf('.') + 1, file.length).toLowerCase();
                 let type;
                 Object.keys(extensions).forEach(key => {
                     if (extensions[key].includes(extension))
                         type = key;
                 });
+
+                if (!type) {
+                    alert(`Unknown file type: ${extension}.\nIf you think this is a mistake, and the file is a valid asset, please rename it to one of the following extensions:\n${allExtensions.join(', ')}`);
+                    return;
+                }
 
                 //  Unique asset ID
                 const id = await electron.nanoid();
@@ -52,8 +75,7 @@ function addNewAsset() {
                     newAsset.originalHeight = sizes.height;
                 }
 
-                videoAssets.unshift(newAsset);
-                rebuildAssetList();
+                insertNewAsset(newAsset);
             });
 
         })
@@ -72,7 +94,7 @@ async function addText() {
         type: 'text'
     };
 
-    videoAssets.unshift(newAsset);
+    insertNewAsset(newAsset);
     rebuildAssetList();
 }
 
@@ -164,29 +186,41 @@ function showAssetOptions() {
 }
 
 //  Rebuilds the asset list in the DOM after videoAssets changed
-function rebuildAssetList() {
+function rebuildAssetList(id) {
     assetList.options.length = 0;
 
     videoAssets.forEach(asset => {
+
         const newOption = new Option(asset.name, asset.id);
-        newOption.addEventListener('contextmenu', e => {
-            e.preventDefault();
-            assetList.selectedIndex = videoAssets.findIndex(x => x.id === e.target.value);
 
-            if (overlayVisible)
-                hideOverlay()
-            else {
-                if (!currentSelectedAsset || e.target.value !== currentSelectedAsset.id)
-                    setCurrentSelectedAsset(true)
-                else
-                    setCurrentSelectedAsset(!previewVisible);
-            }
+        if (asset.type !== 'divider') {
 
-        });
-        newOption.addEventListener('click', () => setCurrentSelectedAsset(false));
-        newOption.addEventListener('dblclick', () => !!currentOverlayAsset && currentOverlayAsset.id === asset.id ? hideOverlay() : showOverlay());
+            //  Preview
+            newOption.addEventListener('contextmenu', e => {
+                e.preventDefault();
+                assetList.selectedIndex = videoAssets.findIndex(x => x.id === e.target.value);
+                if (overlayVisible)
+                    hideOverlay()
+                else {
+                    if (!currentSelectedAsset || e.target.value !== currentSelectedAsset.id)
+                        setCurrentSelectedAsset(true)
+                    else
+                        setCurrentSelectedAsset(!previewVisible);
+                }
+
+            });
+
+            //  Show asset
+            newOption.addEventListener('dblclick', () => !!currentOverlayAsset && currentOverlayAsset.id === asset.id ? hideOverlay() : showOverlay());
+        }
+        else
+            newOption.classList.add('divider');
+
         assetList.add(newOption);
     });
+
+    if (!!id)
+        assetList.value = id;
 }
 
 //  Duplicates one or more assets, under new unique IDs
@@ -211,7 +245,7 @@ function cloneAsset() {
                 }));
 
             videoAssets.splice(assetList.selectedIndex, 0, ...clonedAssets);
-            rebuildAssetList();
+            rebuildAssetList(result[index]);
         });
 }
 
@@ -320,7 +354,7 @@ async function loadAssetList(path) {
     electron.loadJSON(path)
         .then(async data => {
 
-            const missingAssets = await electron.verifyAssets(data.videoAssets);
+            const missingAssets = await electron.verifyAssets(data.videoAssets.filter(asset => ['video', 'audio', 'image'].includes(asset.type)));
             if (missingAssets.length > 0) {
                 alert(`The following asset files appear to be missing:
 
@@ -346,7 +380,8 @@ function setCurrentSelectedAsset(showPreview = false) {
     document.getElementById('asset_notes').value = currentSelectedAsset.description;
 
     closePreview();
-    if (!showPreview) return;
+    if (!showPreview)
+        return;
 
     //  Show preview
     switch (currentSelectedAsset.type) {
@@ -385,4 +420,9 @@ function setCurrentSelectedAsset(showPreview = false) {
             muteButton.classList.add('fa-volume');
         }
     }
+}
+
+//  Update the current asset's notes
+function updateAssetNotes(e) {
+    currentSelectedAsset.description = e.target.value;
 }

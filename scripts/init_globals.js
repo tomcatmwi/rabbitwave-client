@@ -74,7 +74,7 @@ const VideoAsset = {
 
     //  images and text only
     displayTime: 5,             //  display time in seconds, disappears when passed
-    useDisplayTime: true,   //  if false, display timer is off
+    useDisplayTime: false,      //  if false, display timer is off
 
     //  video and images only
     resize: 'fit',              //  resize method: "fit", "vertical", "horizontal", "none", "custom"

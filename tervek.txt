@@ -1,0 +1,84 @@
+ÁLTALÁNOS UI ELVEK:
+===================
+
+- Színséma (esetleg kettő: nappali és éjjeli)
+- Logó
+- Általános UI elemek designja:
+   - Input text
+   - Textarea
+   - Szöveges gomb
+   - Ikonos gomb
+   - Alert, normal, cancel gomboknak más színt
+   - Progressbar
+- Popup ablakok designja: alert, confirm, popup formok
+- Asset lista designja:
+      - Asset neve, típusa (ikon: video, audio, text, kamera, mikrofon)
+      - Asset forrása (local vagy stream)
+      - Mérete-hossza, típusa (JPG, MPG, stb)
+      - Méretezése megjelenítéskor: fit, horizontal, vertical, custom, etc.
+      - Basic asset: ez mindig a képernyőn van
+      - Watermark asset: mindig a képernyőn van, de utolsóként kerül kirajzolásra
+      - Listaelemekhez kijelölt és nem kijelölt állapot
+      - Megjelenített állapot, ez jelzi hogy az adott asset éppen a képernyőn van
+      - Scrollozható legyen
+      - A lista alatt legyen egy összecsukható textarea az assethez fűzött kommentárok megjelenítéséhez
+- A videó fölé kerülő floaterek designja (rec, drawing toolkit, stb)
+- Képernyőterületek designja (draggable, stb)
+
+UI DESIGN
+=========
+
+- Csak a videó és a lista legyen alapból a képernyőn.
+- Területekre osztott képernyő:
+  - Asset lista
+  - Video/audio controller
+  - Jegyzetek
+  - Preview
+- A területek legyenek átrendezhetőek. 
+- A videó, a preview és a jegyzetek átméretezhetőek. 
+- Be is lehessen csukni, minimalizálni őket, majd újra megnyitni.
+- Az asset listában legyenek folderek. Ezek legyenek nyithatóak-csukhatóak.
+- Az asset lista alján legyenek a hozzáadás, törlés, folder hozzáadása, stb. gombok, mint Photoshopban a layer listánál.
+- Legyen menü. Ebben legyen pl. a settings, a defaults, stb.
+- Settings: teljes képernyőn jelenjen meg.
+- A video control (rec, számláló, stb) a videó jobb alsó sarkában legyen, floaterként.
+- A rajzeszközök menüje kb. maradhat. 
+
+ÚJ FUNKCIÓK
+===========
+
+- Több sáv mixelését megoldani
+- Új asset lista, folderek, drag and drop funkció
+- Basic layer: kijelölhetőek legyenek olyan assetek, amelyek mindig a képernyő vannak, nem tűnnek el újabbak megjelenítésekor. Pl. a camera feed. Ezek az asset listában található sorrendben kerülnek a canvasra.
+- Placeholder asset: ezt streameljük, amíg nincs adás. Lehet kép, loopolt videó vagy text. Mindig video size fit, mögötte mindig fekete a háttér.
+- Rajzeszközökhöz, undo, redo, színválasztó dropdown, négyszögrajzoló funkció
+- Képernyő / ablak megosztásának lehetősége
+- Többnyelvűség
+- Feliratozó rendszer
+- Videó vagy kép assethez legyen előre definiált funkció, amellyel a képernyő egy megadott negyedére lehet kitenni
+- A local camera feed is legyen egy videó asset, mint OBS-ben
+- Record pause
+- Watermark lehetősége
+- Transition-ök
+- Mikrofon aktivitását jelző basz
+- Közvetlen streamelés YouTube-ra és máshová
+- Intró és outro automatikus beemelése, ami lehet kép vagy videó
+- URL betöltése assetként
+- Stream fogadása assetként
+- Második képernyő támogatása: lehessen áttolni a listákat, jegyzeteket
+- Csak hang felvétele
+- Exportálás utáni normalizálás, konvertálás FFMPEG-gel
+- Tutorial videó, megtekinthető távoli szerverről
+
+RABBITWAVE REMOTE
+=================
+
+- Korlátozott kliens
+- Egy távoli Rabbitwave-hez csatlakozhat
+- Streamelés előtt feltölthet és megjeleníthet saját asseteket
+- Hozzáférhet mások assetjeihez, ha megengedik
+- Távoli rajzolás?
+- Stream feedback a szerverről
+- Kamerakép helyett állókép (szégyellősöknek)
+
+

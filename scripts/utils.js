@@ -85,25 +85,30 @@ function resizeAsset(element) {
     let newWidth = Number(element.width);
     let newHeight = Number(element.height);
 
+    let resize = currentSelectedAsset.resize || 'fit';
+
     //  Resize
-    if (currentSelectedAsset.resize === 'custom') {
+    if (resize === 'custom') {
         newWidth = currentSelectedAsset.width;
         newHeight = currentSelectedAsset.height;
     }
 
-    if (currentSelectedAsset.resize === 'fit') {
-        if (newWidth < newHeight)
-            currentSelectedAsset.resize = 'vertical'
-        else
-            currentSelectedAsset.resize = 'horizontal';
+    if (resize === 'fit') {
+        newWidth = (newWidth / 100) * (height / (newHeight / 100));
+        newHeight = height;
+
+        if (newWidth > width) {
+            newHeight = (newHeight / 100) * (width / (newWidth / 100));
+            newWidth = width;
+        }
     }
 
-    if (currentSelectedAsset.resize === 'horizontal') {
+    if (resize === 'horizontal') {
         newHeight = (newHeight / 100) * (width / (newWidth / 100));
         newWidth = width;
     }
 
-    if (currentSelectedAsset.resize === 'vertical') {
+    if (resize === 'vertical') {
         newWidth = (newWidth / 100) * (height / (newHeight / 100));
         newHeight = height;
     }
@@ -160,7 +165,7 @@ function moveValues(json, prefix, to = 'form') {
             }
             else {
                 let val = element[typeof json[key] === 'boolean' ? 'checked' : 'value'];
-                if (!isNaN(val) && typeof val !== 'boolean' && typeof val !== 'object' && val !== '')
+                if (typeof val !== 'undefined' && !isNaN(val) && typeof val !== 'boolean' && val !== null && val !== '')
                     val = Number(val);
                 json[key] = val;
             }

@@ -106,7 +106,9 @@ function initUIBindings() {
     });
 
     //  Asset control buttons
+    document.getElementById('asset-list').addEventListener('change', () => setCurrentSelectedAsset(false));
     document.getElementById('btn_asset_new').addEventListener('click', addNewAsset);
+    document.getElementById('btn_asset_divider').addEventListener('click', addAssetListDivider);
     document.getElementById('btn_asset_text').addEventListener('click', addText);
     document.getElementById('btn_asset_delete').addEventListener('click', deleteAsset);
     document.getElementById('btn_asset_clone').addEventListener('click', cloneAsset);
@@ -130,6 +132,9 @@ function initUIBindings() {
     document.getElementById('btn_image_fit_y').addEventListener('click', () => { currentSelectedAsset.resize = 'horizontal'; resizeAsset(overlayImage); });
     document.getElementById('btn_image_nofit').addEventListener('click', () => { currentSelectedAsset.resize = 'none'; resizeAsset(overlayImage); });
     document.getElementById('btn_text_hide').addEventListener('click', hideOverlay);
+
+    //  Asset notes
+    document.getElementById('asset_notes').addEventListener('change', updateAssetNotes);
 }
 
 //  Detects general keypresses
