@@ -171,7 +171,7 @@ function saveVideoFile(savePath, videoBinary) {
 //  Verifies if all file assets exist
 function verifyAssets(assetList) {
   const missingAssets = [];
-  assetList.filter(x => x.type !== 'text').forEach(asset => {
+  assetList.filter(x => ['video', 'audio', 'image'].includes(x.type)).forEach(asset => {
     if (!fs.existsSync(asset.filename))
       missingAssets.push(asset);
   });

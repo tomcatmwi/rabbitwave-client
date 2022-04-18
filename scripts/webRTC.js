@@ -207,6 +207,46 @@ async function startCamera() {
             ctx.restore();
         }
 
+        //  Superimpose subtitle
+        if (!!currentOverlayAsset && currentOverlayAsset.hasOwnProperty('subtitles')) {
+            const subs = currentOverlayAsset.subtitles.filter(s => s.start <= overlayVideo.currentTime && s.end >= overlayVideo.currentTime);
+            if (!!subs.length) {
+                ctx.save();
+                ctx.lineCap = 'round';
+                const fontSize = videoCanvas.width / 38;
+                ctx.font = `${fontSize}px Helvetica`;
+                ctx.textAlign = 'center';
+
+                const lines = subs[0].text.split('\n').reverse();
+
+                if (currentOverlayAsset.subtitleSettings.style === 'rectangle') {
+                    ctx.fillStyle = 'black';
+                    ctx.fillRect(20,
+                        videoCanvas.height - 85 - (lines.length * fontSize),
+                        videoCanvas.width - 40,
+                        (lines.length * fontSize) + 20);
+                }
+
+                lines.forEach((line, index) => {
+
+                    if (currentOverlayAsset.subtitleSettings.style === 'outline') {
+                        ctx.strokeStyle = 'black';
+                        let lineWidth = (videoCanvas.width / 32) / 8;
+                        if (lineWidth > 8) lineWidth = 8;
+                        if (lineWidth < 1) lineWidth = 1;
+                        ctx.lineWidth = lineWidth;
+                        ctx.strokeText(line, (videoCanvas.width / 2), (videoCanvas.height - 80) - (fontSize * index));
+                    }
+
+                    ctx.fillStyle = currentOverlayAsset.subtitleSettings.color;
+                    ctx.fillText(line, (videoCanvas.width / 2), (videoCanvas.height - 80) - (fontSize * index));
+
+                });
+
+                ctx.restore();
+            }
+        }
+
         setTimeout(cameraLoop, (1000 / 30));
     };
 

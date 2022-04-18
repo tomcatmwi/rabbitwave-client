@@ -92,6 +92,10 @@ const VideoAsset = {
     mute: true,                 //  audio on / off
     hideWhenEnds: true,         //  hide automatically when video ends (ignored when loop === true)
     hideDelay: 1,               //  delay to hide video when ended in seconds
+    subtitleSettings: {
+        color: "white",
+        style: "outline"
+    },
 
     //  video and audio only
     startHour: 0,               //  start position, hours
@@ -152,7 +156,7 @@ let currentOverlayAsset;
 let currentResizeData;
 
 //  Shortcuts for HTML DOM elements
-let assetList, videoCanvas, previewImage, previewAudio, videoProgress, playIcon, listCams, listMics, listOuts, recButton, muteButton;
+let assetList, videoCanvas, previewImage, previewAudio, videoProgress, playIcon, listCams, listMics, listOuts, recButton, muteButton, btnSubtitleStart, btnSubtitleEnd, subtitleStart, subtitleEnd, subtitleText, btnSubtitleAdd;
 
 //  MediaRecorder instance
 let mainRecorder = null;

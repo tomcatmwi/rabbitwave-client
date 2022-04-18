@@ -1,0 +1,122 @@
+#subtitle-editor-panel {
+
+    min-width: 80vw !important;
+
+    #subtitle-editor-video {
+        width: 100%;
+        height: auto;
+        max-height: 320px;
+        border: 1px solid lightgray;
+        margin: 0 auto;
+    }
+
+    #subtitle-preview {
+        height: 3em;
+        width: 100%;
+        min-width: 100%;
+        resize: none;
+        font-size: .75em;
+        text-align: center;
+        font-weight: bold;
+
+        &.error {
+            color: red;
+        }
+    }
+
+    #subtitle_start, #subtitle_end {
+        width: 7em;
+    }
+
+    #subtitle_controls {
+        display: flex;
+        flex-direction: row;
+        column-gap: 1em;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #btn_subtitle_start, #btn_subtitle_end {
+
+        &.active {
+            background: green;
+            border: 1px solid lightgreen;
+        }
+    }
+
+    .table-container {
+        max-height: 350px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        border: 1px solid orange;
+    }
+
+    .subtitle_edit {
+        width: 100% !important;
+        min-width: 100% !important;
+
+        font-size: 0.75;
+        cursor: text !important;
+        border: 1px solid lightgray !important;
+        color: lightgray !important;
+
+        &:disabled {
+            cursor: pointer !important;
+            background: black !important;
+            color: lightgray !important;
+            border: none !important;
+        }
+    }
+
+    #subtitles_list {
+        width: 100%;
+        user-select: none;
+
+        td {
+            font-size: .8em;
+            vertical-align: top;
+            padding: 0.5em;
+            color: lightgray;
+
+            input, textarea { 
+                font-size: 1em !important;
+                padding: 0.25em !important;
+                border: none !important;
+                margin: 0 !important;
+                cursor: text;
+                background: darkgray;
+                color: white;
+            }
+
+            textarea {
+                width: 100%;
+                height: 4em;
+                resize: none;
+            }
+        }
+
+        tbody > td:nth-of-type(4) {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &:hover {
+                color: red;
+            }
+        }
+
+        tbody > tr {
+            &:hover {
+                background: darkgray;
+                cursor: pointer;
+            }            
+        }
+
+        thead > tr {
+            background: lightgray;
+            color: black;
+        }
+    }
+
+}

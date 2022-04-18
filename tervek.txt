@@ -81,4 +81,9 @@ RABBITWAVE REMOTE
 - Stream feedback a szerverről
 - Kamerakép helyett állókép (szégyellősöknek)
 
+APRÓSÁGOK
+=========
+
+- Szöveg alá lehessen egységes színt vagy gradienst betenni
+- A rajzok tűnjenek el, ha asset jelenik meg vagy tűnik el
 

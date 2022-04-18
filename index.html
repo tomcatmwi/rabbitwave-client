@@ -271,6 +271,7 @@
 
         <div class="selector">
           <div class="row">
+            <input type="button" class="text-button" id="btn_subtitles" value="Subtitles" />
             <input type="button" class="text-button" id="btn_accept_asset_changes" value="Accept" />
             <input type="button" class="text-button" id="btn_close_asset_options" value="Cancel" />
           </div>
@@ -314,6 +315,87 @@
           <div class="row">
             <input type="button" class="text-button" id="btn_accept_drawing_text" value="Accept" />
             <input type="button" class="text-button" id="btn_close_drawing_text" value="Cancel" />
+          </div>
+        </div>        
+
+      </div>      
+    </div>    
+  
+    <!-- Subtitle editor -->
+    <div class="dark-overlay hidden" id="subtitle-editor-panel">
+      <div class="popup">
+
+        <div class="selector">
+          <video id="subtitle-editor-video" controls controlslist="nodownload nofullscreen noremoteplayback" disablepictureinpicture></video>
+        </div>
+
+        <div class="selector">
+          <div id="subtitle-preview">Subtitle preview</div>
+        </div>
+
+        <div class="selector" id="subtitle_controls">
+          <button id="btn_subtitle_move_start_back" alt="Move back 100 ms"><i class="fa fa-solid fa-backward"></i></button>
+          <button id="btn_subtitle_start" alt="Start subtitle here"><i class="fa fa-solid fa-arrow-alt-from-left"></i></button>
+          <button id="btn_subtitle_move_start_forward" alt="Move back 100 ms"><i class="fa fa-solid fa-forward"></i></button>
+          <input type="text" value="00:00:00.000" disabled id="subtitle_start">
+          <input type="text" value="00:00:00.000" disabled id="subtitle_end">
+          <button id="btn_subtitle_move_end_back" alt="Move back 100 ms"><i class="fa fa-solid fa-backward"></i></button>
+          <button id="btn_subtitle_end" alt="End subtitle here"><i class="fa fa-solid fa-arrow-alt-to-right"></i></button>
+          <button id="btn_subtitle_move_end_forward" alt="Move forward 100 ms"><i class="fa fa-solid fa-forward"></i></button>
+
+        </div>
+
+        <div class="selector">
+          <div class="fullwidth">
+            <textarea id="subtitle_text" class="flex-grow"></textarea>
+            <button id="btn_subtitle_add" alt="Add subtitle" disabled><i class="fa fa-solid fa-plus"></i></button>
+          </div>
+        </div>
+        
+        <div class="selector table-container">
+          <table id="subtitles_list">
+            <thead>
+              <tr>
+                <td>Start</td>
+                <td>End</td>
+                <td>Text</td>
+                <td colspan="2"></td>
+              </tr>
+            </thead>
+            <tbody id="subtitles_list_body">                       
+            </tbody>
+
+          </table>
+        </div>
+
+        <div class="selector-row">
+
+          <div class="selector">
+              <div>Subtitle style:</div>
+              <select id="subtitle_style">
+                <option value="regular">Regular</option>
+                <option selected value="outline">Black outline</option>
+                <option value="rectangle">Black opaque rectangle</option>
+              </select>
+          </div>
+
+          <div class="selector">
+              <div>Subtitle color:</div>
+              <select id="subtitle_color">
+                <option selected value="white">White</option>
+                <option value="yellow">Yellow</option>
+                <option value="red">Red</option>
+                <option value="green">Green</option>
+                <option value="black">Black</option>
+              </select>
+          </div>
+
+        </div>
+
+        <div class="selector">
+          <div class="row">
+            <input type="button" class="text-button" id="btn_cancel_subtitle_editor" value="Cancel" />
+            <input type="button" class="text-button" id="btn_close_subtitle_editor" value="Apply" />
           </div>
         </div>        
 
@@ -465,6 +547,9 @@
 
     <!-- Drawing toolkit -->
     <script type="text/javascript" src="./scripts/drawing.js"></script>
+
+    <!-- Subtitle editor -->
+    <script type="text/javascript" src="./scripts/subtitleEditor.js"></script>    
 
     <!-- WebRTC functions -->
     <script type="text/javascript" src="./scripts/webRTC.js"></script>

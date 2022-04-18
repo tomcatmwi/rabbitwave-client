@@ -173,6 +173,27 @@ readers do not read off random characters that represent icons */
 .fa-arrow-alt-down:before {
   content: "\f354"; }
 
+.fa-arrow-alt-from-left:before {
+  content: "\f347"; }
+
+.fa-arrow-alt-from-right:before {
+  content: "\f348"; }
+
+.fa-arrow-alt-left:before {
+  content: "\f355"; }
+
+.fa-arrow-alt-right:before {
+  content: "\f356"; }
+
+.fa-arrow-alt-to-bottom:before {
+  content: "\f34a"; }
+
+.fa-arrow-alt-to-left:before {
+  content: "\f34b"; }
+
+.fa-arrow-alt-to-right:before {
+  content: "\f34c"; }
+
 .fa-arrow-alt-up:before {
   content: "\f357"; }
 
@@ -184,6 +205,9 @@ readers do not read off random characters that represent icons */
 
 .fa-arrows-v:before {
   content: "\f07d"; }
+
+.fa-backward:before {
+  content: "\f04a"; }
 
 .fa-check:before {
   content: "\f00c"; }
@@ -220,6 +244,9 @@ readers do not read off random characters that represent icons */
 
 .fa-folder-open:before {
   content: "\f07c"; }
+
+.fa-forward:before {
+  content: "\f04e"; }
 
 .fa-grip-lines:before {
   content: "\f7a4"; }

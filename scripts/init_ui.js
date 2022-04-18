@@ -15,6 +15,15 @@ function initUIBindings() {
     recButton = document.getElementById('btn_record');
     muteButton = document.getElementById('video_mute_icon');
 
+    subtitleVideo = document.getElementById('subtitle-editor-video');
+    btnSubtitleStart = document.getElementById('btn_subtitle_start');
+    btnSubtitleEnd = document.getElementById('btn_subtitle_end');
+    subtitleStart = document.getElementById('subtitle_start');
+    subtitleEnd = document.getElementById('subtitle_end');
+    subtitleText = document.getElementById('subtitle_text');
+    btnSubtitleAdd = document.getElementById('btn_subtitle_add');
+    subtitlePreview = document.getElementById('subtitle-preview');
+
     //  Fill codec list in general settings
     videoFormats.forEach(format => document.getElementById('settings_video_codec').add(new Option(format.name, format.codec)));
 
@@ -117,6 +126,22 @@ function initUIBindings() {
     document.getElementById('btn_asset_save').addEventListener('click', saveAssetList);
     document.getElementById('btn_asset_load').addEventListener('click', () => loadAssetList());
     document.getElementById('btn_asset_settings').addEventListener('click', showAssetOptions);
+    document.getElementById('btn_subtitles').addEventListener('click', openSubtitleEditor);
+
+    //  Subtitle editor
+    subtitleVideo.disablePictureInPicture = true;
+    subtitleVideo.addEventListener('timeupdate', e => onSubtitleVideoTimeUpdate(e));
+    document.getElementById('btn_subtitle_move_start_back').addEventListener('click', () => moveCurrentSubtitle('start', -.1));
+    document.getElementById('btn_subtitle_move_start_forward').addEventListener('click', () => moveCurrentSubtitle('start', .1));
+    document.getElementById('btn_subtitle_move_end_back').addEventListener('click', () => moveCurrentSubtitle('end', -.1));
+    document.getElementById('btn_subtitle_move_end_forward').addEventListener('click', () => moveCurrentSubtitle('end', .1));
+
+    document.getElementById('btn_cancel_subtitle_editor').addEventListener('click', () => closeSubtitleEditor(true));
+    document.getElementById('btn_close_subtitle_editor').addEventListener('click', () => closeSubtitleEditor(false));
+    btnSubtitleStart.addEventListener('click', setSubtitleStart);
+    btnSubtitleEnd.addEventListener('click', setSubtitleEnd);
+    btnSubtitleAdd.addEventListener('click', addSubtitle);
+    subtitleText.addEventListener('input', onSubtitleChange)
 
     //  Video overlay control buttons
     document.getElementById('btn_video_play_pause').addEventListener('click', playMedia);

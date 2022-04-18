@@ -186,12 +186,14 @@ function showAssetOptions() {
 }
 
 //  Rebuilds the asset list in the DOM after videoAssets changed
+//  If id is specified, it will be automatically selected
 function rebuildAssetList(id) {
     assetList.options.length = 0;
 
     videoAssets.forEach(asset => {
 
         const newOption = new Option(asset.name, asset.id);
+        newOption.addEventListener('click', e => setCurrentSelectedAsset(false));
 
         if (asset.type !== 'divider') {
 
@@ -219,8 +221,10 @@ function rebuildAssetList(id) {
         assetList.add(newOption);
     });
 
-    if (!!id)
+    if (!!id) {
         assetList.value = id;
+        setCurrentSelectedAsset(false);
+    }
 }
 
 //  Duplicates one or more assets, under new unique IDs

@@ -173,6 +173,27 @@ readers do not read off random characters that represent icons */
 .fa-arrow-alt-down:before {
   content: "\f354"; }
 
+.fa-arrow-alt-from-left:before {
+  content: "\f347"; }
+
+.fa-arrow-alt-from-right:before {
+  content: "\f348"; }
+
+.fa-arrow-alt-left:before {
+  content: "\f355"; }
+
+.fa-arrow-alt-right:before {
+  content: "\f356"; }
+
+.fa-arrow-alt-to-bottom:before {
+  content: "\f34a"; }
+
+.fa-arrow-alt-to-left:before {
+  content: "\f34b"; }
+
+.fa-arrow-alt-to-right:before {
+  content: "\f34c"; }
+
 .fa-arrow-alt-up:before {
   content: "\f357"; }
 
@@ -184,6 +205,9 @@ readers do not read off random characters that represent icons */
 
 .fa-arrows-v:before {
   content: "\f07d"; }
+
+.fa-backward:before {
+  content: "\f04a"; }
 
 .fa-check:before {
   content: "\f00c"; }
@@ -220,6 +244,9 @@ readers do not read off random characters that represent icons */
 
 .fa-folder-open:before {
   content: "\f07c"; }
+
+.fa-forward:before {
+  content: "\f04e"; }
 
 .fa-grip-lines:before {
   content: "\f7a4"; }
@@ -613,6 +640,86 @@ option:checked {
     grid-row-start: 3;
     grid-row-end: 4;
     resize: none; }
+
+#subtitle-editor-panel {
+  min-width: 80vw !important; }
+  #subtitle-editor-panel #subtitle-editor-video {
+    width: 100%;
+    height: auto;
+    max-height: 320px;
+    border: 1px solid lightgray;
+    margin: 0 auto; }
+  #subtitle-editor-panel #subtitle-preview {
+    height: 3em;
+    width: 100%;
+    min-width: 100%;
+    resize: none;
+    font-size: .75em;
+    text-align: center;
+    font-weight: bold; }
+    #subtitle-editor-panel #subtitle-preview.error {
+      color: red; }
+  #subtitle-editor-panel #subtitle_start, #subtitle-editor-panel #subtitle_end {
+    width: 7em; }
+  #subtitle-editor-panel #subtitle_controls {
+    display: flex;
+    flex-direction: row;
+    column-gap: 1em;
+    align-items: center;
+    justify-content: center; }
+  #subtitle-editor-panel #btn_subtitle_start.active, #subtitle-editor-panel #btn_subtitle_end.active {
+    background: green;
+    border: 1px solid lightgreen; }
+  #subtitle-editor-panel .table-container {
+    max-height: 350px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border: 1px solid orange; }
+  #subtitle-editor-panel .subtitle_edit {
+    width: 100% !important;
+    min-width: 100% !important;
+    font-size: 0.75;
+    cursor: text !important;
+    border: 1px solid lightgray !important;
+    color: lightgray !important; }
+    #subtitle-editor-panel .subtitle_edit:disabled {
+      cursor: pointer !important;
+      background: black !important;
+      color: lightgray !important;
+      border: none !important; }
+  #subtitle-editor-panel #subtitles_list {
+    width: 100%;
+    user-select: none; }
+    #subtitle-editor-panel #subtitles_list td {
+      font-size: .8em;
+      vertical-align: top;
+      padding: 0.5em;
+      color: lightgray; }
+      #subtitle-editor-panel #subtitles_list td input, #subtitle-editor-panel #subtitles_list td textarea {
+        font-size: 1em !important;
+        padding: 0.25em !important;
+        border: none !important;
+        margin: 0 !important;
+        cursor: text;
+        background: darkgray;
+        color: white; }
+      #subtitle-editor-panel #subtitles_list td textarea {
+        width: 100%;
+        height: 4em;
+        resize: none; }
+    #subtitle-editor-panel #subtitles_list tbody > td:nth-of-type(4) {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center; }
+      #subtitle-editor-panel #subtitles_list tbody > td:nth-of-type(4):hover {
+        color: red; }
+    #subtitle-editor-panel #subtitles_list tbody > tr:hover {
+      background: darkgray;
+      cursor: pointer; }
+    #subtitle-editor-panel #subtitles_list thead > tr {
+      background: lightgray;
+      color: black; }
 
 .fa-arrow-right {
   transform: rotate(45deg); }

@@ -2,10 +2,18 @@
 readers do not read off random characters that represent icons */
 
 .#{$fa-css-prefix}-arrow-alt-down:before { content: fa-content($fa-var-arrow-alt-down); }
+.#{$fa-css-prefix}-arrow-alt-from-left:before { content: fa-content($fa-var-arrow-alt-from-left); }
+.#{$fa-css-prefix}-arrow-alt-from-right:before { content: fa-content($fa-var-arrow-alt-from-right); }
+.#{$fa-css-prefix}-arrow-alt-left:before { content: fa-content($fa-var-arrow-alt-left); }
+.#{$fa-css-prefix}-arrow-alt-right:before { content: fa-content($fa-var-arrow-alt-right); }
+.#{$fa-css-prefix}-arrow-alt-to-bottom:before { content: fa-content($fa-var-arrow-alt-to-bottom); }
+.#{$fa-css-prefix}-arrow-alt-to-left:before { content: fa-content($fa-var-arrow-alt-to-left); }
+.#{$fa-css-prefix}-arrow-alt-to-right:before { content: fa-content($fa-var-arrow-alt-to-right); }
 .#{$fa-css-prefix}-arrow-alt-up:before { content: fa-content($fa-var-arrow-alt-up); }
 .#{$fa-css-prefix}-arrow-right:before { content: fa-content($fa-var-arrow-right); }
 .#{$fa-css-prefix}-arrows-h:before { content: fa-content($fa-var-arrows-h); }
 .#{$fa-css-prefix}-arrows-v:before { content: fa-content($fa-var-arrows-v); }
+.#{$fa-css-prefix}-backward:before { content: fa-content($fa-var-backward); }
 .#{$fa-css-prefix}-check:before { content: fa-content($fa-var-check); }
 .#{$fa-css-prefix}-circle:before { content: fa-content($fa-var-circle); }
 .#{$fa-css-prefix}-clock:before { content: fa-content($fa-var-clock); }
@@ -18,6 +26,7 @@ readers do not read off random characters that represent icons */
 .#{$fa-css-prefix}-eye-slash:before { content: fa-content($fa-var-eye-slash); }
 .#{$fa-css-prefix}-film-alt:before { content: fa-content($fa-var-film-alt); }
 .#{$fa-css-prefix}-folder-open:before { content: fa-content($fa-var-folder-open); }
+.#{$fa-css-prefix}-forward:before { content: fa-content($fa-var-forward); }
 .#{$fa-css-prefix}-grip-lines:before { content: fa-content($fa-var-grip-lines); }
 .#{$fa-css-prefix}-hand-paper:before { content: fa-content($fa-var-hand-paper); }
 .#{$fa-css-prefix}-image:before { content: fa-content($fa-var-image); }

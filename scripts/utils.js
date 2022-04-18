@@ -1,6 +1,6 @@
 
 //  Convert seconds into a formatted timestamp
-function secondsToTime(seconds) {
+function secondsToTime(seconds, showMilliseconds = false) {
     let hours = 0;
     let minutes = 0;
 
@@ -14,9 +14,21 @@ function secondsToTime(seconds) {
         seconds -= 60;
     }
 
-    seconds = Math.round(seconds);
+    let retval = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).substr(0, String(seconds).indexOf('.')).padStart(2, '0')}`;
 
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    if (showMilliseconds)
+        retval += String(seconds).substr(String(seconds).indexOf('.'), 4).padEnd(4, '0');
+
+    return retval;
+}
+
+//  Convert timestamp to time
+function timestampToTime(timestamp) {
+    return timestamp.split(':').reduce((previous, current, index) => {
+        if (index === 0) return current * 3600;
+        if (index === 1) return current * 60;
+        if (index === 2) return current;
+    })
 }
 
 //  Convert time to seconds
@@ -35,10 +47,7 @@ function showDOMElement(id, show) {
             console.error(`Element not found: ${id}`);
             return;
         }
-        if (show)
-            element.classList.remove('hidden')
-        else
-            element.classList.add('hidden');
+        element.classList[show ? 'remove' : 'add']('hidden');
     });
 }
 
@@ -157,7 +166,7 @@ function moveValues(json, prefix, to = 'form') {
     keys.forEach((key, index) => {
         const element = document.getElementById(prefix + ids[index]);
         if (!element)
-            alert(`Missing form element: "${ids[index]}"`)
+            console.log(`Missing form element: "${ids[index]}"`)
         else
             if (to === 'form') {
                 if (json[key] !== null)

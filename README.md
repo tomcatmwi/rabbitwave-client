@@ -32,7 +32,6 @@ I'll explain the name later. Proper docs coming up later. This was made for my o
 - Transition effects such as fade, etc
 - Simple image animations
 - Optional pointer to explain and mark images
-- Subtitles and subtitle editor
 - Intro animation and superimposed watermarks (corner logo)
 - Direct streaming and automatic uploading
 - Allow remote guests
@@ -43,3 +42,4 @@ I'll explain the name later. Proper docs coming up later. This was made for my o
 - Fuck your unit tests
 - Maybe I should use JQuery tho
 - Or Bootstrap or something
+- Yeah, maybe Vue

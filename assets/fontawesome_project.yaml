@@ -73,3 +73,21 @@ icons:
       - solid
   - grip-lines:
       - solid
+  - forward:
+      - solid
+  - backward:
+      - solid
+  - arrow-alt-right:
+      - solid
+  - arrow-alt-left:
+      - solid
+  - arrow-alt-to-right:
+      - solid
+  - arrow-alt-to-left:
+      - solid
+  - arrow-alt-from-left:
+      - solid
+  - arrow-alt-from-right:
+      - solid
+  - arrow-alt-to-bottom:
+      - solid
