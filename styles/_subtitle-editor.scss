@@ -1,10 +1,14 @@
 #subtitle-editor-panel {
 
-    min-width: 80vw !important;
+    #subtitle-editor-inner {
+        min-width: 70vw !important;
+        width: 70vw !important;
+    }
 
     #subtitle-editor-video {
         width: 100%;
         height: auto;
+        padding: 0 0 2em 0;
         max-height: 320px;
         border: 1px solid lightgray;
         margin: 0 auto;
@@ -95,7 +99,7 @@
             }
         }
 
-        tbody > td:nth-of-type(4) {
+        tbody > td:nth-of-type(4), tbody > td:nth-of-type(5) {
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -113,9 +117,10 @@
             }            
         }
 
-        thead > tr {
+        thead > td {
             background: lightgray;
             color: black;
+            font-weight: bold;
         }
     }
 

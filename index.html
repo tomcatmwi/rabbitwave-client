@@ -271,7 +271,7 @@
 
         <div class="selector">
           <div class="row">
-            <input type="button" class="text-button" id="btn_subtitles" value="Subtitles" />
+            <input type="button" class="text-button options-video options-audio" id="btn_subtitles" value="Subtitles" />
             <input type="button" class="text-button" id="btn_accept_asset_changes" value="Accept" />
             <input type="button" class="text-button" id="btn_close_asset_options" value="Cancel" />
           </div>
@@ -323,10 +323,17 @@
   
     <!-- Subtitle editor -->
     <div class="dark-overlay hidden" id="subtitle-editor-panel">
-      <div class="popup">
+      <div class="popup" id="subtitle-editor-inner">
 
         <div class="selector">
-          <video id="subtitle-editor-video" controls controlslist="nodownload nofullscreen noremoteplayback" disablepictureinpicture></video>
+          <video id="subtitle-editor-video" controlslist="nodownload nofullscreen noremoteplayback" disablepictureinpicture></video>
+        </div>
+
+        <div class="selector-row">
+          <button id="btn_subtitle_video_play" alt="Play/Pause"><i id="btn_subtitle_video_play_i" class="fa fa-solid fa-play"></i></button>
+          <button id="btn_subtitle_video_backward" alt="Back 100 ms"><i class="fa fa-solid fa-backward"></i></button>
+          <input id="subtitle_video_seeker" type="range" min="0" value="0" />
+          <button id="btn_subtitle_video_forward" alt="Forward 100 ms"><i class="fa fa-solid fa-forward"></i></button>            
         </div>
 
         <div class="selector">

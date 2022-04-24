@@ -24,11 +24,15 @@ function secondsToTime(seconds, showMilliseconds = false) {
 
 //  Convert timestamp to time
 function timestampToTime(timestamp) {
-    return timestamp.split(':').reduce((previous, current, index) => {
-        if (index === 0) return current * 3600;
-        if (index === 1) return current * 60;
-        if (index === 2) return current;
-    })
+    let retval = 0;
+    timestamp.split(':').forEach((value, index) => {
+        switch (index) {
+            case 0: retval += Number(value) * 3600; break;
+            case 1: retval += Number(value) * 60; break;
+            case 2: retval += Number(value); break;
+        }
+    });
+    return retval;
 }
 
 //  Convert time to seconds

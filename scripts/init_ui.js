@@ -23,6 +23,8 @@ function initUIBindings() {
     subtitleText = document.getElementById('subtitle_text');
     btnSubtitleAdd = document.getElementById('btn_subtitle_add');
     subtitlePreview = document.getElementById('subtitle-preview');
+    btnSubtitlePlayPause = document.getElementById('btn_subtitle_video_play');
+    subtitleVideoSeeker = document.getElementById('subtitle_video_seeker');
 
     //  Fill codec list in general settings
     videoFormats.forEach(format => document.getElementById('settings_video_codec').add(new Option(format.name, format.codec)));
@@ -141,7 +143,18 @@ function initUIBindings() {
     btnSubtitleStart.addEventListener('click', setSubtitleStart);
     btnSubtitleEnd.addEventListener('click', setSubtitleEnd);
     btnSubtitleAdd.addEventListener('click', addSubtitle);
-    subtitleText.addEventListener('input', onSubtitleChange)
+    subtitleText.addEventListener('input', onSubtitleChange);
+    subtitleStart.addEventListener('click', e => subtitleVideo.currentTime = e.target.value);
+    subtitleEnd.addEventListener('click', e => subtitleVideo.currentTime = e.target.value);
+    btnSubtitlePlayPause.addEventListener('click', subtitleVideoStartStop);
+    document.getElementById('btn_subtitle_video_backward').addEventListener('click', () => subtitleVideo.currentTime = subtitleVideo.currentTime - 0.1);
+    document.getElementById('btn_subtitle_video_forward').addEventListener('click', () => subtitleVideo.currentTime = subtitleVideo.currentTime + 0.1);
+    subtitleVideoSeeker.addEventListener('input', e => subtitleVideo.currentTime = e.target.value);
+
+    subtitleVideo.addEventListener('loadedmetadata', (e) => {
+        subtitleVideoSeeker.max = e.path[0].duration;
+        subtitleVideoSeeker.value = 0;
+    })
 
     //  Video overlay control buttons
     document.getElementById('btn_video_play_pause').addEventListener('click', playMedia);

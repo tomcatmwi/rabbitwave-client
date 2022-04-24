@@ -10,6 +10,10 @@ let currentSubtitle = {
 function openSubtitleEditor() {
     subtitles = currentSelectedAsset.hasOwnProperty('subtitles') ? [...currentSelectedAsset.subtitles] : [];
     document.getElementById('subtitle-editor-video').src = currentSelectedAsset.filename;
+
+    if (!currentSelectedAsset.hasOwnProperty('subtitleSettings'))
+        currentSelectedAsset.subtitleSettings = { ...VideoAsset.subtitleSettings };
+
     document.getElementById('subtitle_color').value = currentSelectedAsset.subtitleSettings.color;
     document.getElementById('subtitle_style').value = currentSelectedAsset.subtitleSettings.style;
     renderSubtitleList();
@@ -65,6 +69,7 @@ function onSubtitleVideoTimeUpdate(e) {
     const subs = subtitles.filter(s => s.start <= subtitleVideo.currentTime && s.end >= subtitleVideo.currentTime);
     subtitlePreview.classList[subs.length > 1 ? 'add' : 'remove']('error');
     subtitlePreview.innerHTML = !!subs.length ? subs[0].text : '';
+    subtitleVideoSeeker.value = subtitleVideo.currentTime;
 }
 
 //  Enable/disable the "add" button as needed
@@ -97,8 +102,6 @@ async function addSubtitle() {
 
 //  Moves the current subtitle forward or backward
 function moveCurrentSubtitle(type, value) {
-    console.log('Moving ', type, value);
-
     currentSubtitle[type] = Number(currentSubtitle[type]) + Number(value);
 
     if (currentSubtitle[type] <= 0)
@@ -117,8 +120,10 @@ function renderSubtitleList() {
 
     subtitles.forEach((subtitle, index) => {
 
+        subtitle.start = Number(subtitle.start);
+        subtitle.end = Number(subtitle.end);
+
         let tr = document.createElement('tr');
-        tr.addEventListener('dblclick', e => editSubtitle(e, 'start', index));
         tr.id = 'subtitle_row_' + index;
 
         let td = document.createElement('td');
@@ -145,10 +150,18 @@ function renderSubtitleList() {
         td.addEventListener('click', () => removeSubtitle(subtitle));
         tr.appendChild(td);
 
+        td = document.createElement('td');
+        i = document.createElement('i');
+        i.classList.add('fa');
+        i.classList.add('fa-solid');
+        i.classList.add('fa-pencil');
+        td.appendChild(i);
+        td.addEventListener('click', () => editSubtitle('start', index));
+        tr.appendChild(td);
+
         document.getElementById('subtitles_list_body').appendChild(tr);
 
         //  Editor row
-
         tr = document.createElement('tr');
         tr.id = 'subtitle_edit_row_' + index;
         tr.classList.add('hidden');
@@ -192,6 +205,7 @@ function renderSubtitleList() {
         i.classList.add('fa-arrow-alt-to-bottom');
         btn.appendChild(i);
         td.appendChild(btn);
+
 
         tr.appendChild(td);
 
@@ -282,8 +296,9 @@ function renderSubtitleList() {
 
 //  Verify a subtitle that's been input
 function verifySubtitle(subtitle) {
+
     if (!subtitle)
-        subtitle = currentSubtitle;
+        return false;
 
     //  Check if times are set
     if (!subtitle.start || !subtitle.end) {
@@ -312,9 +327,7 @@ function verifySubtitle(subtitle) {
 }
 
 //  Edit an existing subtitle
-function editSubtitle(e, field, index) {
-    e.preventDefault();
-    e.stopPropagation();
+function editSubtitle(field, index) {
     cancelUpdateSubtitle();
 
     currentSubtitleIndex = index;
@@ -352,7 +365,7 @@ function updateSubtitle(index) {
         text
     }
 
-    if (!verifySubtitle())
+    if (!verifySubtitle(currentSubtitle))
         return;
 
     subtitles[index] = { ...currentSubtitle }
@@ -377,7 +390,6 @@ function cancelUpdateSubtitle() {
 }
 
 function onKeyDownEditSubtitle(e, index) {
-    console.log(e);
     if (e.key === 'Enter' && !e.shiftKey)
         updateSubtitle(index);
 
@@ -409,6 +421,19 @@ function moveTime(index, type, value) {
 //  Sets the current time of the video as starting/ending time
 function setCurrentTime(index, type) {
     subtitles[index][type] = Number(subtitleVideo.currentTime);
-    console.log('Set to time: ', subtitleVideo.currentTime);
     document.getElementById(`subtitle_${type}_${index}`).value = secondsToTime(subtitles[index][type], true);
+}
+
+function subtitleVideoStartStop() {
+    const i = btnSubtitlePlayPause.firstChild;
+
+    if (subtitleVideo.paused) {
+        i.classList.remove('fa-play');
+        i.classList.add('fa-pause');
+        subtitleVideo.play();
+    } else {
+        i.classList.remove('fa-pause');
+        i.classList.add('fa-play');
+        subtitleVideo.pause();
+    }
 }
