@@ -1,6 +1,6 @@
 //  A little fix to the Array object
 Array.prototype.swap = function (x, y) {
-    var b = this[x];
+    let b = this[x];
     this[x] = this[y];
     this[y] = b;
     return this;

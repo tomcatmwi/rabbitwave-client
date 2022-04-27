@@ -16,7 +16,7 @@ window.onload = async () => {
     //  It will start the camera automatically
     electron.store_get('lastConfig')
         .then(value => {
-            if (!!value)
+            if (value)
                 loadSettings(value)
             else
                 throw new Error('Unable to load your last saved configuration. Please configure your input and output devices!');
@@ -29,7 +29,7 @@ window.onload = async () => {
     //  Load last asset list
     electron.store_get('lastAssetList')
         .then(value => {
-            if (!!value)
+            if (value)
                 loadAssetList(value);
         })
         .catch(err => alert(err.message));

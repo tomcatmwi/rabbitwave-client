@@ -85,14 +85,14 @@ function createWindow() {
   mainWindow.webContents.openDevTools();
 
   mainWindow.on('close', function (e) {
-    var choice = dialog.showMessageBox(this,
-      {
-        type: 'question',
-        buttons: ['Yes', 'No'],
-        title: 'Confirm',
-        message: 'Are you sure you want to quit?'
-      });
-    if (choice == 1)
+    const choice = dialog.showMessageBox(this,
+        {
+          type: 'question',
+          buttons: ['Yes', 'No'],
+          title: 'Confirm',
+          message: 'Are you sure you want to quit?'
+        });
+    if (choice === 1)
       e.preventDefault();
   });
 
@@ -104,17 +104,17 @@ function createWindow() {
 app.whenReady().then(async () => {
 
   //  Exposing methods to templates
-  ipcMain.handle('dialog', (event, method, params) => dialog[method](params));
+  ipcMain.handle('dialog', (_event, method, params) => dialog[method](params));
   ipcMain.handle('pathSeparator', () => path.sep);
   ipcMain.handle('nanoid', () => nanoid());
-  ipcMain.handle('saveJSON', (event, savePath, data) => saveJSON(savePath, data));
-  ipcMain.handle('loadJSON', (event, savePath) => loadJSON(savePath));
-  ipcMain.handle('store_get', (event, key) => store.get(key));
-  ipcMain.handle('store_set', (event, key, value) => store.set(key, value));
-  ipcMain.handle('store_delete', (event, key) => store.delete(key));
+  ipcMain.handle('saveJSON', (_event, savePath, data) => saveJSON(savePath, data));
+  ipcMain.handle('loadJSON', (_event, savePath) => loadJSON(savePath));
+  ipcMain.handle('store_get', (_event, key) => store.get(key));
+  ipcMain.handle('store_set', (_event, key, value) => store.set(key, value));
+  ipcMain.handle('store_delete', (_event, key) => store.delete(key));
   ipcMain.handle('quit', () => process.exit());
-  ipcMain.handle('saveVideoFile', (event, savePath, videoBinary) => saveVideoFile(savePath, videoBinary));
-  ipcMain.handle('verifyAssets', (event, files) => verifyAssets(files));
+  ipcMain.handle('saveVideoFile', (_event, savePath, videoBinary) => saveVideoFile(savePath, videoBinary));
+  ipcMain.handle('verifyAssets', (_event, files) => verifyAssets(files));
 
   createWindow();
 
@@ -133,7 +133,7 @@ app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit()
 })
 
-app.on('browser-window-created', function (e, window) {
+app.on('browser-window-created', function (_e, window) {
   window.setMenu(null);
 });
 
@@ -164,7 +164,7 @@ function loadJSON(savePath) {
 //  Saves a video file
 function saveVideoFile(savePath, videoBinary) {
   return new Promise((resolve, reject) => {
-    fs.writeFile(savePath, Buffer.from(videoBinary, 'base64'), error => !!error ? reject(error) : resolve(savePath));
+    fs.writeFile(savePath, Buffer.from(videoBinary, 'base64'), error => error ? reject(error) : resolve(savePath));
   });
 }
 

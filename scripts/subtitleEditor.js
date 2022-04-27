@@ -60,7 +60,7 @@ function setSubtitleEnd() {
 }
 
 //  Update time counters and show current subtitle
-function onSubtitleVideoTimeUpdate(e) {
+function onSubtitleVideoTimeUpdate() {
     if (!btnSubtitleStart.classList.contains('active'))
         subtitleStart.value = secondsToTime(subtitleVideo.currentTime, true);
     if (!btnSubtitleEnd.classList.contains('active'))
@@ -68,12 +68,12 @@ function onSubtitleVideoTimeUpdate(e) {
 
     const subs = subtitles.filter(s => s.start <= subtitleVideo.currentTime && s.end >= subtitleVideo.currentTime);
     subtitlePreview.classList[subs.length > 1 ? 'add' : 'remove']('error');
-    subtitlePreview.innerHTML = !!subs.length ? subs[0].text : '';
+    subtitlePreview.innerHTML = subs.length ? subs[0].text : '';
     subtitleVideoSeeker.value = subtitleVideo.currentTime;
 }
 
 //  Enable/disable the "add" button as needed
-function onSubtitleChange(e) {
+function onSubtitleChange() {
     btnSubtitleAdd.disabled = !subtitleStart || !subtitleEnd || !subtitleText.value.trim();
 }
 
@@ -125,39 +125,31 @@ function renderSubtitleList() {
 
         let tr = document.createElement('tr');
         tr.id = 'subtitle_row_' + index;
+        let td, i;
 
-        let td = document.createElement('td');
-        td.innerHTML = secondsToTime(subtitle.start, true);
-        td.addEventListener('click', () => subtitleVideo.currentTime = subtitles[index].start);
-        tr.appendChild(td);
-
-        td = document.createElement('td');
-        td.innerHTML = secondsToTime(subtitle.end, true);
-        td.addEventListener('click', () => subtitleVideo.currentTime = subtitles[index].end);
-        tr.appendChild(td);
+        ['start', 'end'].forEach((cmd) => {
+            td = document.createElement('td');
+            td.innerHTML = secondsToTime(subtitle[cmd], true);
+            td.addEventListener('click', () => subtitleVideo.currentTime = subtitles[index][cmd]);
+            tr.appendChild(td);
+        });
 
         td = document.createElement('td');
         td.innerHTML = subtitle.text.replace(/\n/igm, '<br />');
 
         tr.appendChild(td);
 
-        td = document.createElement('td');
-        let i = document.createElement('i');
-        i.classList.add('fa');
-        i.classList.add('fa-solid');
-        i.classList.add('fa-times');
-        td.appendChild(i);
-        td.addEventListener('click', () => removeSubtitle(subtitle));
-        tr.appendChild(td);
-
-        td = document.createElement('td');
-        i = document.createElement('i');
-        i.classList.add('fa');
-        i.classList.add('fa-solid');
-        i.classList.add('fa-pencil');
-        td.appendChild(i);
-        td.addEventListener('click', () => editSubtitle('start', index));
-        tr.appendChild(td);
+        [{iconType: 'fa-times', fn: removeSubtitle(subtitle)},
+            {iconType: 'fa-pencil', fn: editSubtitle('start', index)}].forEach(({iconType, fn}) => {
+            td = document.createElement('td');
+            i = document.createElement('i');
+            i.classList.add('fa');
+            i.classList.add('fa-solid');
+            i.classList.add(iconType);
+            td.appendChild(i);
+            td.addEventListener('click', () => fn);
+            tr.appendChild(td);
+        });
 
         document.getElementById('subtitles_list_body').appendChild(tr);
 
@@ -188,24 +180,17 @@ function renderSubtitleList() {
         editField.value = secondsToTime(subtitle.start, true);
         td.appendChild(editField);
 
-        btn = document.createElement('button');
-        btn.addEventListener('click', () => moveTime(index, 'start', .1));
-        i = document.createElement('i');
-        i.classList.add('fa');
-        i.classList.add('fa-solid');
-        i.classList.add('fa-forward');
-        btn.appendChild(i);
-        td.appendChild(btn);
-
-        btn = document.createElement('button');
-        btn.addEventListener('click', () => setCurrentTime(index, 'start'));
-        i = document.createElement('i');
-        i.classList.add('fa');
-        i.classList.add('fa-solid');
-        i.classList.add('fa-arrow-alt-to-bottom');
-        btn.appendChild(i);
-        td.appendChild(btn);
-
+        [{iconType: 'fa-forward', fn: moveTime(index, 'start', .1)},
+            {iconType: 'fa-arrow-alt-to-bottom', fn: setCurrentTime(index, 'start')}].forEach(({iconType, fn}) => {
+            btn = document.createElement('button');
+            btn.addEventListener('click', () => fn);
+            i = document.createElement('i');
+            i.classList.add('fa');
+            i.classList.add('fa-solid');
+            i.classList.add(iconType);
+            btn.appendChild(i);
+            td.appendChild(btn);
+        });
 
         tr.appendChild(td);
 
@@ -231,23 +216,17 @@ function renderSubtitleList() {
         editField.value = secondsToTime(subtitle.end, true);
         td.appendChild(editField);
 
-        btn = document.createElement('button');
-        btn.addEventListener('click', () => moveTime(index, 'end', .1));
-        i = document.createElement('i');
-        i.classList.add('fa');
-        i.classList.add('fa-solid');
-        i.classList.add('fa-forward');
-        btn.appendChild(i);
-        td.appendChild(btn);
-
-        btn = document.createElement('button');
-        btn.addEventListener('click', () => setCurrentTime(index, 'end'));
-        i = document.createElement('i');
-        i.classList.add('fa');
-        i.classList.add('fa-solid');
-        i.classList.add('fa-arrow-alt-to-bottom');
-        btn.appendChild(i);
-        td.appendChild(btn);
+        [{iconType: 'fa-forward', fn: moveTime(index, 'end', .1)},
+            {iconType: 'fa-arrow-alt-to-bottom', fn: setCurrentTime(index, 'end')}].forEach(({iconType, fn}) => {
+            btn = document.createElement('button');
+            btn.addEventListener('click', () => fn);
+            i = document.createElement('i');
+            i.classList.add('fa');
+            i.classList.add('fa-solid');
+            i.classList.add(iconType);
+            btn.appendChild(i);
+            td.appendChild(btn);
+        });
 
         tr.appendChild(td);
 
@@ -266,29 +245,20 @@ function renderSubtitleList() {
         td.appendChild(editField);
         tr.appendChild(td);
 
-        //  Update button
-        td = document.createElement('td');
-        btn = document.createElement('button');
-        btn.addEventListener('click', () => updateSubtitle(index));
-        i = document.createElement('i');
-        i.classList.add('fa');
-        i.classList.add('fa-solid');
-        i.classList.add('fa-check');
-        btn.appendChild(i);
-        td.appendChild(btn);
-        tr.appendChild(td);
-
-        //  Cancel button
-        td = document.createElement('td');
-        btn = document.createElement('button');
-        btn.addEventListener('click', () => cancelUpdateSubtitle());
-        i = document.createElement('i');
-        i.classList.add('fa');
-        i.classList.add('fa-solid');
-        i.classList.add('fa-times');
-        btn.appendChild(i);
-        td.appendChild(btn);
-        tr.appendChild(td);
+        //  Update button & Cancel button
+        [{iconType: 'fa-check', fn: updateSubtitle(index)},
+            {iconType: 'fa-times', fn: cancelUpdateSubtitle()}].forEach(({iconType, fn}) => {
+            td = document.createElement('td');
+            btn = document.createElement('button');
+            btn.addEventListener('click', () => fn);
+            i = document.createElement('i');
+            i.classList.add('fa');
+            i.classList.add('fa-solid');
+            i.classList.add(iconType);
+            btn.appendChild(i);
+            td.appendChild(btn);
+            tr.appendChild(td);
+        });
 
         document.getElementById('subtitles_list_body').appendChild(tr);
     });
@@ -349,7 +319,7 @@ function updateSubtitle(index) {
     const end = document.getElementById(`subtitle_end_${index}`).value.trim();
     const text = document.getElementById(`subtitle_text_${index}`).value.trim();
 
-    if (!String(start).match(/^(\d{1,2}\:){2}(\d{1,2})\.(\d{1,3})/i)) {
+    if (!String(start).match(/^(\d{1,2}:){2}(\d{1,2})\.(\d{1,3})/i)) {
         alert('Starting time is invalid!');
         return;
     }
@@ -382,9 +352,9 @@ function updateSubtitle(index) {
 function cancelUpdateSubtitle() {
     const rows = document.getElementsByTagName('tr');
     const ids = [];
-    for (let i = 0; i < rows.length; i++)
-        if (!!rows[i].id)
-            ids.push(rows[i].id);
+    for (const element of rows)
+        if (element.id)
+            ids.push(element.id);
     showDOMElement(ids.filter(x => x.includes('subtitle_edit_row_')), false);
     showDOMElement(ids.filter(x => !x.includes('subtitle_edit_row_')), true);
 }

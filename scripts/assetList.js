@@ -11,7 +11,7 @@ async function addAssetListDivider() {
 function insertNewAsset(asset) {
     let index = assetList.options.selectedIndex;
     if (index < 0)
-        index = !!videoAssets.length ? videoAssets.length - 1 : 0;
+        index = videoAssets.length ? videoAssets.length - 1 : 0;
     videoAssets.splice(index + 1, 0, asset);
     rebuildAssetList(asset.id);
 }
@@ -39,10 +39,10 @@ function addNewAsset() {
         .then(async result => {
 
             if (result.canceled) return;
-            result.filePaths.forEach(async file => {
+            for (const file of result.filePaths) {
 
                 //  Determine file type (image, video, audio)
-                const extension = file.substr(file.lastIndexOf('.') + 1, file.length).toLowerCase();
+                const extension = file.substring(file.lastIndexOf('.') + 1, file.length).toLowerCase();
                 let type;
                 Object.keys(extensions).forEach(key => {
                     if (extensions[key].includes(extension))
@@ -51,7 +51,7 @@ function addNewAsset() {
 
                 if (!type) {
                     alert(`Unknown file type: ${extension}.\nIf you think this is a mistake, and the file is a valid asset, please rename it to one of the following extensions:\n${allExtensions.join(', ')}`);
-                    return;
+                    continue;
                 }
 
                 //  Unique asset ID
@@ -62,7 +62,7 @@ function addNewAsset() {
                     ...VideoAsset,
                     id,
                     filename: file,
-                    name: file.substr(file.lastIndexOf(pathSeparator) + 1, file.length),
+                    name: file.substring(file.lastIndexOf(pathSeparator) + 1, file.length),
                     type
                 };
 
@@ -76,7 +76,7 @@ function addNewAsset() {
                 }
 
                 insertNewAsset(newAsset);
-            });
+            }
 
         })
         .catch(err => alert(err.message))
@@ -129,7 +129,7 @@ function newAssetFile() {
                 height: sizes.height
             });
 
-            if (!!sizes) {
+            if (sizes) {
                 document.getElementById('asset_option_width').value = sizes.width;
                 document.getElementById('asset_option_height').value = sizes.height;
                 document.getElementById('asset_option_original_width').value = sizes.width;
@@ -155,12 +155,12 @@ function showAssetOptions() {
     if (!currentSelectedAsset) return;
 
     let elements = document.querySelectorAll("[class*='options_']");
-    for (let i = 0; i < elements.length; i++)
-        elements[i].classList.add('hidden');
+    for (const element of elements)
+        element.classList.add('hidden');
 
     elements = document.querySelectorAll('.options_' + currentSelectedAsset.type);
-    for (let i = 0; i < elements.length; i++)
-        elements[i].classList.remove('hidden');
+    for (const element of elements)
+        element.classList.remove('hidden');
 
     moveValues(currentSelectedAsset, 'asset_option_', 'form');
 
@@ -193,7 +193,7 @@ function rebuildAssetList(id) {
     videoAssets.forEach(asset => {
 
         const newOption = new Option(asset.name, asset.id);
-        newOption.addEventListener('click', e => setCurrentSelectedAsset(false));
+        newOption.addEventListener('click', () => setCurrentSelectedAsset(false));
 
         if (asset.type !== 'divider') {
 
@@ -221,7 +221,7 @@ function rebuildAssetList(id) {
         assetList.add(newOption);
     });
 
-    if (!!id) {
+    if (id) {
         assetList.value = id;
         setCurrentSelectedAsset(false);
     }
@@ -233,7 +233,7 @@ function cloneAsset() {
 
     //  goofy way to get ids, but otherwise we'd only get Promises
     const ids = [];
-    for (t = 0; t < assetList.selectedOptions.length; t++)
+    for (const element of assetList.selectedOptions)
         ids.push(electron.nanoid());
 
     Promise.all(ids)
@@ -288,9 +288,9 @@ function moveAsset(direction) {
     }
 
     rebuildAssetList();
-    for (x = 0; x < assetList.options.length; x++)
-        if (selected.includes(assetList.options[x].value))
-            assetList.options[x].selected = true;
+    for (const element of assetList.options)
+        if (selected.includes(element.value))
+            element.selected = true;
 }
 
 //  Saves the current asset list and notes
@@ -371,7 +371,7 @@ Please verify them before recording!`);
             document.getElementById('notes').value = data.notes;
             rebuildAssetList();
         })
-        .catch(err => alert(`Unable to load asset list from ${path}`));
+        .catch(() => alert(`Unable to load asset list from ${path}`));
 }
 
 //  Runs when an asset is selected on the list.

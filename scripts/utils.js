@@ -14,10 +14,10 @@ function secondsToTime(seconds, showMilliseconds = false) {
         seconds -= 60;
     }
 
-    let retval = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).substr(0, String(seconds).indexOf('.')).padStart(2, '0')}`;
+    let retval = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).substring(0, String(seconds).indexOf('.')).padStart(2, '0')}`;
 
     if (showMilliseconds)
-        retval += String(seconds).substr(String(seconds).indexOf('.'), 4).padEnd(4, '0');
+        retval += String(seconds).substring(String(seconds).indexOf('.'), 4).padEnd(4, '0');
 
     return retval;
 }
@@ -41,11 +41,11 @@ function timeToSeconds(hours = 0, minutes = 0, seconds = 0) {
 }
 
 //  Shows or hides one or more DOM elements
-function showDOMElement(id, show) {
-    if (!Array.isArray(id))
-        id = [id];
+function showDOMElement(elementId, show) {
+    if (!Array.isArray(elementId))
+        elementId = [elementId];
 
-    id.forEach(id => {
+    elementId.forEach(id => {
         const element = document.getElementById(id);
         if (!element) {
             console.error(`Element not found: ${id}`);
@@ -76,7 +76,7 @@ async function getAssetOriginalSize(asset) {
     if (asset.type === 'image') {
         sizes = await new Promise(resolve => {
             const tempImg = new Image();
-            tempImg.onload = e => {
+            tempImg.onload = () => {
                 resolve({
                     width: tempImg.width,
                     height: tempImg.height
@@ -199,7 +199,7 @@ function compareObjects(source, target) {
     const findKeys = (slice, path, saveTo) => {
         Object.keys(slice).forEach(key => {
 
-            const keyPath = (!!path ? path + '.' : '') + key;
+            const keyPath = (path ? path + '.' : '') + key;
 
             saveTo.push(keyPath);
 
@@ -246,16 +246,11 @@ function prettifyBytes(bytes = 0) {
     let retval = '0 B';
     const units = [' B', ' KB', ' MB', ' GB', ' TB'];
 
-    units.forEach((unit, index) => {
+    units.forEach((_unit, index) => {
         const pow = Math.pow(1024, index);
         if (bytes >= pow)
             retval = `${(bytes / pow).toFixed(2)} ${units[index]}`
     });
 
     return retval;
-}
-
-//  Sleep
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
 }

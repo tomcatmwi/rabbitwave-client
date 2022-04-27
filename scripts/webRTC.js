@@ -72,7 +72,7 @@ async function startCamera() {
 
     //  Audio device selection
     await cameraVideo.setSinkId(appSettings.video.audioOutputDevice)
-        .catch(err => {
+        .catch(() => {
             alert('Failed to initialize the selected audio input device.\nPlease review configuration settings!')
         });
 
@@ -86,8 +86,7 @@ async function startCamera() {
     */
 
     //  Display resolution info
-    const resolutionInfo = `${appSettings.video.resolution}, ${appSettings.video.videoBitrate}/${appSettings.video.audioBitrate} bps`;
-    document.getElementById('record_resolution').innerHTML = resolutionInfo;
+    document.getElementById('record_resolution').innerHTML = `${appSettings.video.resolution}, ${appSettings.video.videoBitrate}/${appSettings.video.audioBitrate} bps`;
 
     //  Configure overlay canvas  -------------------------------------------------------------------------------------------------
 
@@ -210,7 +209,7 @@ async function startCamera() {
         //  Superimpose subtitle
         if (!!currentOverlayAsset && currentOverlayAsset.hasOwnProperty('subtitles')) {
             const subs = currentOverlayAsset.subtitles.filter(s => s.start <= overlayVideo.currentTime && s.end >= overlayVideo.currentTime);
-            if (!!subs.length) {
+            if (subs.length) {
                 ctx.save();
                 ctx.lineCap = 'round';
                 const fontSize = videoCanvas.width / 38;
@@ -265,7 +264,7 @@ async function startCamera() {
 
     mediaSwitcher = new MediaSwitcher();
     const mainStream = await mediaSwitcher.initialize(videoStream)
-        .catch(err => alert('Unable to initialize MediaSwitcher.'));
+        .catch(() => alert('Unable to initialize MediaSwitcher.'));
     if (!mainStream) return;
 
     videoMonitor.width = videoSize[0];
@@ -390,7 +389,7 @@ async function openSaveDialog() {
 
     if (!path) {
         if (!confirm('Abandon recording without saving?'))
-            openSaveDialog()
+            await openSaveDialog()
         else
             finishSaveVideo();
         return;
@@ -405,7 +404,7 @@ async function openSaveDialog() {
         .catch(err => alert(err.message));
 
     if (!saveSuccessful && confirm('Unable to save recording. Try again?'))
-        openSaveDialog()
+        await openSaveDialog()
     else
         finishSaveVideo();
 }
@@ -417,5 +416,5 @@ async function saveVideoFile() {
     clearInterval(recordInterval);
     recButton.classList.remove('recording');
     showDOMElement('spinner', true);
-    openSaveDialog();
+    await openSaveDialog();
 }

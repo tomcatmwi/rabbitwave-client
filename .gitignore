@@ -3,10 +3,10 @@ styles/css
 .git
 .github
 .gitignore
+.idea
 package-lock.json
 *.webm
 *.mp4
-*.mp3
 *.avi
 *.mp3
 ffmpeg

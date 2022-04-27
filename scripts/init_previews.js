@@ -25,21 +25,21 @@ function initPreviews() {
 
     //  Set up events of the preview video element -----------------------------------------------------------------------------
 
-    previewVideo.addEventListener('volumechange', e => {
+    previewVideo.addEventListener('volumechange', () => {
         previewVolumeChange(previewVideo);
     });
 
-    previewVideo.addEventListener('timeupdate', (e) => {
+    previewVideo.addEventListener('timeupdate', () => {
         previewTimeUpdate(previewVideo)
     });
 
     //  Set up events of the preview audio element -----------------------------------------------------------------------------
 
-    previewAudio.addEventListener('volumechange', e => {
+    previewAudio.addEventListener('volumechange', () => {
         previewVolumeChange(previewVideo);
     });
 
-    previewAudio.addEventListener('timeupdate', (e) => {
+    previewAudio.addEventListener('timeupdate', () => {
         previewTimeUpdate(previewVideo)
     });
 

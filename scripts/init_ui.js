@@ -89,12 +89,6 @@ function initUIBindings() {
         document.getElementById('asset_option_y').disabled = e.target.value !== 'none';
     });
 
-    document.getElementById('asset_option_cut_end').addEventListener('change', (e) => {
-        document.getElementById('asset_option_end_hour').disabled = !e.target.checked;
-        document.getElementById('asset_option_end_minute').disabled = !e.target.checked;
-        document.getElementById('asset_option_end_second').disabled = !e.target.checked;
-    });
-
     document.getElementById('asset_option_resize').addEventListener('change', (e) => {
         const disabled = e.target.value !== 'custom';
         document.getElementById('asset_option_width').disabled = disabled;

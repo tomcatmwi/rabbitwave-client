@@ -6,8 +6,8 @@ function clearDrawing() {
 //  Button clicked, start drawing
 function initDrawing(color) {
     const buttons = document.querySelectorAll("[id*='btn_image_color_']");
-    for (let i = 0; i < buttons.length; i++)
-        buttons[i].classList.remove('btn_on');
+    for (const element of buttons)
+        element.classList.remove('btn_on');
 
     document.getElementById('btn_image_color_' + color).classList.add('btn_on');
     drawing.ctx.lineWidth = Math.round(videoCanvas.width / 256);
@@ -84,7 +84,6 @@ function drawStart(e) {
         }
 
         cancelDraw();
-        return;
     }
 }
 
@@ -122,8 +121,8 @@ function toggleDrawingTools() {
     const btnPencil = document.getElementById('btn_image_draw_pencil');
     const buttons = document.querySelectorAll("[id*='btn_image_color_']");
     let colorButtonIds = [];
-    for (let i = 0; i < buttons.length; i++)
-        colorButtonIds.push(buttons[i].id);
+    for (const element of buttons)
+        colorButtonIds.push(element.id);
     colorButtonIds = [
         'btn_image_draw_clear',
         'btn_image_draw_text',

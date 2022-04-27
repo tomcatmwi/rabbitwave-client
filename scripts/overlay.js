@@ -141,7 +141,7 @@ function showText() {
                 let leftmost = null;
                 let rightmost = null;
                 for (let x = 0; x < row.length; x++) {
-                    if (!!row[x]) {
+                    if (row[x]) {
                         if (leftmost === null)
                             leftmost = x;
                         rightmost = x;
