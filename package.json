@@ -21,7 +21,7 @@
     "electron": "^18.1.0"
   },
   "dependencies": {
-    "electron-rebuild": "^3.2.7",
+    "electron-rebuild": "^3.2.9",
     "electron-store": "^8.0.1",
     "ffmpeg.js": "^4.2.9003",
     "js-ffmpeg": "^0.0.36",
